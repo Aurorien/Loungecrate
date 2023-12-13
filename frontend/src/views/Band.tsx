@@ -1,5 +1,5 @@
-function BandList() {
-  return <div>Band List page</div>;
+function Band() {
+  return <div>Band List page</div>
 }
 
-export default BandList;
+export default Band
