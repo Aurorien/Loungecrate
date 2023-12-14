@@ -1,5 +1,12 @@
+import Nav from '../components/Nav'
+
 function Home() {
-  return <h1>Loungecrate</h1>;
+  return (
+    <>
+      <Nav />
+      <h1>Loungecrate</h1>
+    </>
+  )
 }
 
-export default Home;
+export default Home
