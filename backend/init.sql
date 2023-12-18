@@ -30,52 +30,30 @@ CREATE TABLE band (
   FOREIGN KEY (bandCityId) REFERENCES city(cityId)
 );
 
-CREATE TABLE item (
-  itemId  SERIAL PRIMARY KEY,
-  itemName VARCHAR(200),
-  itemAmount VARCHAR(150),
-);
-
-CREATE TABLE rider (
-  riderId  SERIAL PRIMARY KEY,
-  riderBandId INT,
-  FOREIGN KEY (riderBandId) REFERENCES band(bandId)
-);
-
-CREATE TABLE rider_item (
-  riderItemId SERIAL PRIMARY KEY,
-  riderId INT,
-  itemId INT,
-  FOREIGN KEY (riderId) REFERENCES rider(riderId),
-  FOREIGN KEY (itemId) REFERENCES item(itemId)
-);
-
-CREATE TABLE event (
+CREATE TABLE events (
   eventId  SERIAL PRIMARY KEY,
   eventName VARCHAR(200),
   eventDescription TEXT,
-  eventDate DATE NOT NULL,
+  eventDate DATE,
   eventTime VARCHAR(20),
   eventVenueId INT,
   FOREIGN KEY (eventVenueId) REFERENCES venue(venueId)
 );
 
-CREATE TABLE event_rider (
-  eventRiderId SERIAL PRIMARY KEY,
-  eventId INT,
-  riderId INT,
-  FOREIGN KEY (eventId) REFERENCES event(eventId),
-  FOREIGN KEY (riderId) REFERENCES rider(riderId)
+CREATE TABLE eventBand (
+  eventBandId  SERIAL PRIMARY KEY,
+  eventBandEventId INT,
+  eventBandBandId INT,
+  FOREIGN KEY (eventBandEventId) REFERENCES events(eventId),
+  FOREIGN KEY (eventBandBandId) REFERENCES band(bandId)
 );
 
-CREATE TABLE band_rider (
-  bandRiderId SERIAL PRIMARY KEY,
-  bandId INT,
-  riderId INT,
-  eventId INT,
-  FOREIGN KEY (bandId) REFERENCES band(bandId),
-  FOREIGN KEY (riderId) REFERENCES rider(riderId),
-  FOREIGN KEY (eventId) REFERENCES event(eventId)
+CREATE TABLE rider (
+  riderId  SERIAL PRIMARY KEY,
+  riderItemName VARCHAR(200),
+  riderItemAmount VARCHAR(200),
+  riderEventBandId INT,
+  FOREIGN KEY (riderBandId) REFERENCES EventBand(EventBandId)
 );
 
 ---------------------------------------------------------------------
@@ -106,14 +84,23 @@ VALUES (
   ('Idril', 'ambient', 'Atmospheric, infinite depth and width. Idril takes us on a bottomless journey through fantastic soundscapes.', 3)
 );
 
--- INSERT INTO rider (riderItem, riderItemAmount, riderBandId)
--- VALUES (
---   ('skumsvampar', '1/2 kg', 1), ('spenatsmoothie', '4 st.', 1), ('patchouli-rökelse', '1 st.', 1),
---   ('cola-soda', '1L', 2), ('fullgrain chocolate cookies', '10 pcs', 2),
---   ('melonsoda', 'ett stort glas', 3), ('luftfuktare', '1 st.', 3)
--- );
+INSERT INTO events (eventName, eventDescription, eventDate, eventTime, eventVenueId, eventUserId)
+VALUES (
+  ('The Cave', 'Welcome into the dark and wonderous space where bats sings in choir.', '2025-04-28', '19:00', 2, 1),
+  ('Klubb Twilight', 'En på en resa i ljudlandskap med Myceline och Idril!', '2025-09-03', '19:00', 3, 1)
+)
 
--- INSERT INTO event (eventName, eventDescription, eventDate, eventTime, eventVenueId, eventRiderId, eventUserId)
--- VALUES (
---   ('Klubb Twilight', 'En på en resa i ljudlandskap med Myceline och Idril!', '2025-09-03', '19:00', 3, )
--- )
+INSERT INTO eventBand (eventBandEventId, eventBandBandId)
+VALUES (
+  (1, 2), -- 1: Yggrasil på The Cave
+  (2, 1), -- 2: Myceline på Klubb Twilight
+  (2, 3) -- 3: Idril på Klubb Twilight
+)
+
+
+INSERT INTO rider (riderItemName, riderItemAmount, riderEventBandId)
+VALUES (
+  ('cola-soda', '1L', 1), ('fullgrain chocolate cookies', '10 pcs', 1),
+  ('skumsvampar', '1/2 kg', 2), ('spenatsmoothie', '4 st.', 2), ('patchouli-rökelse', '1 st.', 2),
+  ('melonsoda', 'ett stort glas', 3), ('luftfuktare', '1 st.', 3)
+);
