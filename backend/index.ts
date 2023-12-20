@@ -81,6 +81,21 @@ app.post("/login", async (_request, response) => {
 
 // Endpoint for getting events for logged in user
 
+app.get("/userevents", async (request, response) => {
+  try {
+    const userId = 1;
+    console.log("userId:", userId);
+    const { rows } = await client.query(
+      "SELECT * FROM events WHERE userId = $1",
+      [userId]
+    );
+    response.send(rows);
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: error.message });
+  }
+});
+
 // Endpoint for adding city
 
 // Endpoint for adding venues
