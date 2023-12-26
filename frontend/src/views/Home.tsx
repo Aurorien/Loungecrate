@@ -1,10 +1,19 @@
+import { useLogInStore } from '../utils/store'
 import Nav from '../components/Nav'
+import LogInAndRegister from './LogInAndRegister'
 
 function Home() {
+  const { loggedIn } = useLogInStore()
   return (
     <>
-      <Nav />
-      <h1>Loungecrate</h1>
+      {loggedIn ? (
+        <>
+          <Nav />
+          <h1>Loungecrate</h1>
+        </>
+      ) : (
+        <LogInAndRegister />
+      )}
     </>
   )
 }

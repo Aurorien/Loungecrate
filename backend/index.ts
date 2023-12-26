@@ -1,7 +1,9 @@
 import cors from "cors";
-import * as dotenv from "dotenv";
+import dotenv from "dotenv";
 import { Client } from "pg";
 import express from "express";
+import path from "path";
+import crypto from "node:crypto";
 
 dotenv.config();
 
@@ -9,12 +11,14 @@ const client = new Client({
   connectionString: process.env.PGURI,
 });
 
-client.connect();
-
 const app = express(),
   port = process.env.PORT || 3000;
 
-app.use(express.json(), cors());
+app.use(
+  express.static(path.join(path.resolve(), "public")),
+  express.json(),
+  cors()
+);
 
 async function databaseConnection() {
   try {
@@ -26,60 +30,98 @@ async function databaseConnection() {
 }
 databaseConnection();
 
-// Endpoint for adding user, WIP
-app.post("/users", async (_request, response) => {
+//GET cities
+
+app.get("/city", async (_request, response) => {
   try {
-    const { userName, userPassword } = _request.body;
-
-    // Database transaction
-    await client.query("BEGIN");
-
-    if (userName) {
-      const addUserQuery = `INSERT INTO users (userName, userPassword) VALUES ($1, $2)`;
-      const userValues = [userName, userPassword];
-
-      await client.query(addUserQuery, userValues);
-    }
-
-    await client.query("COMMIT");
-
-    response.send("User successfully added into the database");
+    const sql = `SELECT * FROM city;`;
+    const { rows } = await client.query(sql);
+    response.send(rows);
   } catch (error) {
-    await client.query("ROLLBACK");
-
     console.error("Error executing the SQL query:", error);
     response.status(500).send("Internal Server Error");
   }
 });
 
-// Endpoint for log in user, WIP
-app.post("/login", async (_request, response) => {
-  const { userName, userPassword } = _request.body;
+//LOGIN
+
+const generateSalt = () => {
+  return crypto.randomBytes(16).toString("hex");
+};
+
+const hashPassword = (password: string, salt: string) => {
+  const hash = crypto
+    .pbkdf2Sync(password, salt, 10000, 64, "sha512")
+    .toString("hex");
+  return hash;
+};
+
+// Endpoint for log in user
+app.post("/login", async (request, response) => {
+  const { username, password } = request.body;
 
   try {
     const result = await client.query(
-      "SELECT * FROM users WHERE username = $1 and userPassword = $2",
-      [userName, userPassword]
+      "SELECT * FROM users WHERE username = $1",
+      [username]
     );
 
     const user = result.rows[0];
+    console.log("user", user);
 
     if (!user) {
       response.status(401).json({
         success: false,
-        message: "No account found with that username or password",
+        message: "No account found with that username",
+      });
+      return;
+    }
+
+    const hashedPassword = hashPassword(password, user.salt);
+
+    if (hashedPassword === user.userhashedpassword) {
+      response.status(200).json({
+        username: user.username,
+        success: true,
+        message: "Login successful",
+      });
+    } else {
+      response.status(401).json({
+        success: false,
+        message: "Incorrect password",
       });
     }
   } catch (error) {
-    console.error(error);
-    response.status(500).json({
-      success: false,
-      error: error.message,
-    });
+    console.error("Error executing the SQL query:", error);
+    response.status(500).send("Internal Server Error");
   }
 });
 
-// Endpoint for getting events for logged in user
+// Endpoint for register user
+
+app.post("/register", async (request, response) => {
+  const { username, password } = request.body;
+
+  const salt = generateSalt();
+  const hashedPassword = hashPassword(password, salt);
+
+  try {
+    await client.query(
+      "INSERT INTO users (username, userHashedPassword, salt) VALUES ($1, $2, $3)",
+      [username, hashedPassword, salt]
+    );
+
+    response.status(201).json({
+      success: true,
+      message: "User registered successfully",
+    });
+  } catch (error) {
+    console.error("Error executing the SQL query:", error);
+    response.status(500).send("Internal Server Error");
+  }
+});
+
+// GETTING EVENTS FOR LOGGED IN USER
 
 app.get("/userevents", async (request, response) => {
   try {
@@ -91,24 +133,10 @@ app.get("/userevents", async (request, response) => {
     );
     response.send(rows);
   } catch (error) {
-    console.error(error);
-    response.status(500).json({ error: error.message });
+    console.error("Error executing the SQL query:", error);
+    response.status(500).send("Internal Server Error");
   }
 });
-
-// Endpoint for adding city
-
-// Endpoint for adding venues
-
-// Endpoint for adding bands
-
-// Endpoint for adding event
-
-// Endpoint for searching or getting bands
-
-// Endpoint for searching or getting venues
-
-// Endpoint for searching or getting city
 
 app.listen(port, () => {
   console.log(`Ready at http://localhost:${port}/`);
