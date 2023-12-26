@@ -1,9 +1,20 @@
 -- CREATE DATABASE loungecrate
 
+
+DROP TABLE IF EXISTS rider;
+DROP TABLE IF EXISTS eventBand;
+DROP TABLE IF EXISTS events;
+DROP TABLE IF EXISTS band;
+DROP TABLE IF EXISTS venue;
+DROP TABLE IF EXISTS city;
+DROP TABLE IF EXISTS users;
+
+
 CREATE TABLE users (
   userId SERIAL PRIMARY KEY,
-  userName VARCHAR(30) NOT NULL UNIQUE,
-  userPassword VARCHAR(255)
+  userName VARCHAR(50) UNIQUE NOT NULL,
+  userHashedPassword TEXT NOT NULL,
+  salt TEXT NOT NULL
 );
 
 CREATE TABLE city (
@@ -60,8 +71,11 @@ CREATE TABLE rider (
 
 ---------------------------------------------------------------------
 
-INSERT INTO users (userName, userPassword)
-VALUES ('test', 'test');
+-- testuser, testuser
+INSERT INTO users (userName, userHashedPassword, salt)
+VALUES
+('testuser', '4aeac9c07a966f31e40bdd2525fd3f6d4b91c79c51aaa4a93e5fd9af199
+67c635e57a3eb548897def6d24b225d0fc534085d0fe609fd575d96d4e3323a4c0a40', '52be92b677b078bc2447642fcff02b57')
 
 INSERT INTO city (cityName)
 VALUES
