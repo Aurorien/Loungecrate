@@ -48,9 +48,9 @@ CREATE TABLE events (
   eventDate DATE,
   eventTime VARCHAR(20),
   eventVenueId INT,
-  eventUserId INT,
+  eventUserName VARCHAR(50),
   FOREIGN KEY (eventVenueId) REFERENCES venue(venueId),
-  FOREIGN KEY (eventUserId) REFERENCES users(userId)
+  FOREIGN KEY (eventUserName) REFERENCES users(userName)
 );
 
 CREATE TABLE eventBand (
@@ -71,11 +71,11 @@ CREATE TABLE rider (
 
 ---------------------------------------------------------------------
 
--- testuser, testuser
+-- Shadowood, testuser
 INSERT INTO users (userName, userHashedPassword, salt)
 VALUES
-('testuser', '4aeac9c07a966f31e40bdd2525fd3f6d4b91c79c51aaa4a93e5fd9af199
-67c635e57a3eb548897def6d24b225d0fc534085d0fe609fd575d96d4e3323a4c0a40', '52be92b677b078bc2447642fcff02b57')
+('Shadowood', '4aeac9c07a966f31e40bdd2525fd3f6d4b91c79c51aaa4a93e5fd9af199
+67c635e57a3eb548897def6d24b225d0fc534085d0fe609fd575d96d4e3323a4c0a40', '52be92b677b078bc2447642fcff02b57');
 
 INSERT INTO city (cityName)
 VALUES
@@ -97,10 +97,10 @@ VALUES
   ('Yggdrasil', 'kraut', 'Analog, pure, and reverberating. Unique musical consistencies influenced by the acoustics of the radomes at Teufelsberg in Berlin.', 4),
   ('Idril', 'ambient', 'Atmospheric, infinite depth and width. Idril takes us on a bottomless journey through fantastic soundscapes.', 3);
 
-INSERT INTO events (eventName, eventDescription, eventDate, eventTime, eventVenueId, eventUserId)
+INSERT INTO events (eventName, eventDescription, eventDate, eventTime, eventVenueId, eventUserName)
 VALUES
-  ('The Cave', 'Welcome into the dark and wonderous space where bats sings in choir.', '2025-04-28', '19:00', 2, 1),
-  ('Klubb Twilight', 'En på en resa i ljudlandskap med Myceline och Idril!', '2025-09-03', '19:00', 3, 1);
+  ('The Cave', 'Welcome into the dark and wonderous space where bats sings in choir.', '2025-04-28', '19:00', 2, 'Shadowood'),
+  ('Klubb Twilight', 'En på en resa i ljudlandskap med Myceline och Idril!', '2025-09-03', '19:00', 3, 'Shadowood');
 
 INSERT INTO eventBand (eventBandEventId, eventBandBandId)
 VALUES
