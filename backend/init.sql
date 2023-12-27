@@ -74,8 +74,7 @@ CREATE TABLE rider (
 -- Shadowood, testuser
 INSERT INTO users (userName, userHashedPassword, salt)
 VALUES
-('Shadowood', '4aeac9c07a966f31e40bdd2525fd3f6d4b91c79c51aaa4a93e5fd9af199
-67c635e57a3eb548897def6d24b225d0fc534085d0fe609fd575d96d4e3323a4c0a40', '52be92b677b078bc2447642fcff02b57');
+('Shadowood', '4aeac9c07a966f31e40bdd2525fd3f6d4b91c79c51aaa4a93e5fd9af19967c635e57a3eb548897def6d24b225d0fc534085d0fe609fd575d96d4e3323a4c0a40', '52be92b677b078bc2447642fcff02b57');
 
 INSERT INTO city (cityName)
 VALUES
