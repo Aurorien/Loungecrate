@@ -78,6 +78,7 @@ VALUES
 
 INSERT INTO city (cityName)
 VALUES
+  ('TBA'),
   ('Göteborg'),
   ('Tokyo'),
   ('Lövstabruk'),
@@ -85,27 +86,29 @@ VALUES
 
 INSERT INTO venue (venueName, venueSize, venueCityId)
 VALUES
-  ('Flowerave', 'Large', 1),
-  ('The Dome', 'Huge', 2),
-  ('Folkets Hus', 'Large', 3),
-  ('Waldrock', 'Medium', 4);
+  ('TBA', 'TBA', 1),
+  ('Flowerave', 'Large', 2),
+  ('The Dome', 'Huge', 3),
+  ('Folkets Hus', 'Large', 4),
+  ('Waldrock', 'Medium', 5);
 
 INSERT INTO band (bandName, bandGenre, bandDescription, bandCityId)
 VALUES
-  ('Myceline', 'darkwave', 'Out of Hisingsdimman emerges this darkwave band inspired by mushrooms and a connection with nature', 1),
-  ('Yggdrasil', 'kraut', 'Analog, pure, and reverberating. Unique musical consistencies influenced by the acoustics of the radomes at Teufelsberg in Berlin.', 4),
-  ('Idril', 'ambient', 'Atmospheric, infinite depth and width. Idril takes us on a bottomless journey through fantastic soundscapes.', 3);
+  ('TBA', 'TBA', 'TBA', 1),
+  ('Myceline', 'darkwave', 'Out of Hisingsdimman emerges this darkwave band inspired by mushrooms and a connection with nature', 2),
+  ('Yggdrasil', 'kraut', 'Analog, pure, and reverberating. Unique musical consistencies influenced by the acoustics of the radomes at Teufelsberg in Berlin.', 5),
+  ('Idril', 'ambient', 'Atmospheric, infinite depth and width. Idril takes us on a bottomless journey through fantastic soundscapes.', 4);
 
 INSERT INTO events (eventName, eventDescription, eventDate, eventTime, eventVenueId, eventUserName)
 VALUES
-  ('The Cave', 'Welcome into the dark and wonderous space where bats sings in choir.', '2025-04-28', '19:00', 2, 'Shadowood'),
-  ('Klubb Twilight', 'En på en resa i ljudlandskap med Myceline och Idril!', '2025-09-03', '19:00', 3, 'Shadowood');
+  ('The Cave', 'Welcome into the dark and wonderous space where bats sings in choir.', '2025-04-28', '19:00', 3, 'Shadowood'),
+  ('Klubb Twilight', 'En på en resa i ljudlandskap med Myceline och Idril!', '2025-09-03', '19:00', 4, 'Shadowood');
 
 INSERT INTO eventBand (eventBandEventId, eventBandBandId)
 VALUES
-  (1, 2), -- 1: Yggrasil på The Cave
-  (2, 1), -- 2: Myceline på Klubb Twilight
-  (2, 3); -- 3: Idril på Klubb Twilight
+  (1, 3), -- 1: Yggrasil på The Cave
+  (2, 2), -- 2: Myceline på Klubb Twilight
+  (2, 4); -- 3: Idril på Klubb Twilight
 
 
 INSERT INTO rider (riderItemName, riderItemAmount, riderEventBandId)
