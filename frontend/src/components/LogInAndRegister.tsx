@@ -151,7 +151,7 @@ function LogInAndRegister() {
           }
           required
         />
-        <button type="submit">
+        <button type="submit" id="submit">
           {toggleForm.login ? 'Log In' : 'Register'}
         </button>
       </form>

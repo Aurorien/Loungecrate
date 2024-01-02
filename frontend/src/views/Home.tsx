@@ -1,6 +1,7 @@
 import { useLogInStore } from '../utils/store'
 import Nav from '../components/Nav'
-import LogInAndRegister from './LogInAndRegister'
+import LogInAndRegister from '../components/LogInAndRegister'
+import './Home.css'
 
 function Home() {
   const { loggedIn } = useLogInStore()
