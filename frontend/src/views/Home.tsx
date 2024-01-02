@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { useLogInStore } from '../utils/store'
 import Nav from '../components/Nav'
 import LogInAndRegister from '../components/LogInAndRegister'
@@ -11,6 +12,9 @@ function Home() {
         <>
           <Nav />
           <h1>Loungecrate</h1>
+          <Link id="home-add-event-button" to="/addevent">
+            Add event
+          </Link>
         </>
       ) : (
         <LogInAndRegister />

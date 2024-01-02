@@ -1,7 +1,7 @@
 function AddEvent() {
   return (
     <>
-      <h1>Add an event</h1>
+      <h1 id="add-event-h1">Add event</h1>
       <h2>Event name:</h2>
       <input type="text" id="eventName" />
       <h2>Add band to the event</h2>
