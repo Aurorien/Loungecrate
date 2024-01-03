@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+
+  database:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+  backend:
+    build: ./backend
+    ports:
+      - "${PORT}:3000"
+    environment:
+      PGURI: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}
+    depends_on:
+      - database

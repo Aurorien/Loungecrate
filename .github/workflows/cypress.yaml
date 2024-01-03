@@ -10,6 +10,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@v2
 
@@ -17,6 +32,12 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: "18.x"
+
+      - name: Set up Docker Compose
+        run: docker-compose up -d
+
+      - name: Check containers
+        run: docker ps
 
       - name: Change to frontend directory
         run: cd frontend
@@ -29,8 +50,8 @@ jobs:
         run: npm run dev &
         working-directory: ./frontend
 
-      - name: Wait for Server
-        run: sleep 7
+      - name: Wait for Server and Database
+        run: sleep 30
 
       - name: Run tests
         run: npm run test
