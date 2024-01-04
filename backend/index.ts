@@ -20,14 +20,35 @@ app.use(
   cors()
 );
 
-async function databaseConnection() {
-  try {
-    await client.connect();
-    console.log("Database is running and the connection is established.");
-  } catch (error) {
-    console.error("Error connecting to the database:", error);
+// async function databaseConnection() {
+//   try {
+//     await client.connect();
+//     console.log("Database is running and the connection is established.");
+//   } catch (error) {
+//     console.error("Error connecting to the database:", error);
+//   }
+// }
+
+async function databaseConnection(retryCount = 5, delay = 5000) {
+  for (let i = 0; i < retryCount; i++) {
+    try {
+      await client.connect();
+      console.log("Database is running and the connection is established.");
+      return; // Exit the function if connection is successful
+    } catch (error) {
+      console.error(
+        `Attempt ${i + 1}: Error connecting to the database`,
+        error
+      );
+      if (i < retryCount - 1) {
+        console.log(`Retrying connection in ${delay}ms...`);
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
+    }
   }
+  console.error("All attempts to connect to the database have failed.");
 }
+
 databaseConnection();
 
 //GET cities
