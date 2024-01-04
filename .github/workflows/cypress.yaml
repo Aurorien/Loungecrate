@@ -32,12 +32,28 @@ jobs:
       - name: Check containers
         run: docker ps
 
-      - name: Debug and View backend container logs
+      - name: View database container logs
         run: |
-          echo "Current Docker Containers:"
+          echo "Current Docker containers:"
           docker ps
 
-          echo "Fetching Backend Container ID..."
+          echo "Fetching database container ID..."
+          DATABASE_CONTAINER_ID=$(docker ps -qf "name=_database_1" | awk 'NR==1{print $1}')
+
+          if [ -z "$DATABASE_CONTAINER_ID" ]; then
+            echo "Database container not found"
+            exit 1
+          fi
+
+          echo "Found database container ID: $DATABASE_CONTAINER_ID"
+          docker logs $DATABASE_CONTAINER_ID
+
+      - name: View backend container logs
+        run: |
+          echo "Current Docker containers:"
+          docker ps
+
+          echo "Fetching backend container ID..."
           BACKEND_CONTAINER_ID=$(docker ps -qf "name=_backend_1" | awk 'NR==1{print $1}')
 
           if [ -z "$BACKEND_CONTAINER_ID" ]; then
@@ -45,7 +61,7 @@ jobs:
             exit 1
           fi
 
-          echo "Found Backend Container ID: $BACKEND_CONTAINER_ID"
+          echo "Found backend container ID: $BACKEND_CONTAINER_ID"
           docker logs $BACKEND_CONTAINER_ID
 
       - name: Change to frontend directory
