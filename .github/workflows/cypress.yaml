@@ -32,6 +32,22 @@ jobs:
       - name: Check containers
         run: docker ps
 
+      - name: Debug and View backend container logs
+        run: |
+          echo "Current Docker Containers:"
+          docker ps
+
+          echo "Fetching Backend Container ID..."
+          BACKEND_CONTAINER_ID=$(docker ps -qf "name=_backend_1" | awk 'NR==1{print $1}')
+
+          if [ -z "$BACKEND_CONTAINER_ID" ]; then
+            echo "Backend container not found"
+            exit 1
+          fi
+
+          echo "Found Backend Container ID: $BACKEND_CONTAINER_ID"
+          docker logs $BACKEND_CONTAINER_ID
+
       - name: Change to frontend directory
         run: cd frontend
 
