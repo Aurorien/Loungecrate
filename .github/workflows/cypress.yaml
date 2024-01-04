@@ -26,6 +26,9 @@ jobs:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           PORT: 3000
 
+      - name: Wait for Server and Database
+        run: sleep 15
+
       - name: Check containers
         run: docker ps
 
