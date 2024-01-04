@@ -76,6 +76,7 @@ const hashPassword = (password: string, salt: string) => {
 
 // Endpoint for log in user
 app.post("/login", async (request, response) => {
+  console.log("Entered th /login endpoint");
   const { username, password } = request.body;
 
   try {
