@@ -20,30 +20,27 @@ app.use(
   cors()
 );
 
-// async function databaseConnection() {
-//   try {
-//     await client.connect();
-//     console.log("Database is running and the connection is established.");
-//   } catch (error) {
-//     console.error("Error connecting to the database:", error);
-//   }
-// }
-
 async function databaseConnection(retryCount = 5, delay = 5000) {
+  let client;
   for (let i = 0; i < retryCount; i++) {
+    client = new Client({
+      connectionString: process.env.PGURI,
+    });
+
     try {
       await client.connect();
       console.log("Database is running and the connection is established.");
-      return; // Exit the function if connection is successful
+      return; // Connection successful
     } catch (error) {
       console.error(
         `Attempt ${i + 1}: Error connecting to the database`,
         error
       );
       if (i < retryCount - 1) {
-        console.log(`Retrying connection in ${delay}ms...`);
-        await new Promise((resolve) => setTimeout(resolve, delay));
+        await new Promise((resolve) => setTimeout(resolve, delay)); // Wait before retrying
       }
+    } finally {
+      await client.end(); // Close client regardless of success or failure
     }
   }
   console.error("All attempts to connect to the database have failed.");
