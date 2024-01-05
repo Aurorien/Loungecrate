@@ -80,6 +80,11 @@ jobs:
           echo "Found frontend container ID: $FRONTEND_CONTAINER_ID"
           docker logs $FRONTEND_CONTAINER_ID
 
+      - name: Test backend endpoint city
+        run: |
+          docker compose exec -it backend /bin/bash
+          curl -v http://localhost:3000/city
+
       - name: Run Cypress tests
         run: |
           docker compose exec -it frontend npm run test
