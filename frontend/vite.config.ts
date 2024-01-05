@@ -9,8 +9,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/login': 'http://backend:3000',
-      '/register': 'http://backend:3000'
+      '/login': 'http://localhost:3000',
+      '/register': 'http://localhost:3000'
     }
   },
   build: {
