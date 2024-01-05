@@ -82,4 +82,4 @@ jobs:
 
       - name: Run Cypress tests
         run: |
-          docker-compose exec frontend npm run test
+          docker compose exec -it frontend npm run test
