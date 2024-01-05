@@ -158,5 +158,5 @@ app.get("/userevents", async (request, response) => {
 });
 
 app.listen(port, () => {
-  console.log(`Ready at http://localhost:${port}/`);
+  console.log(`Server running on port ${port}`);
 });
