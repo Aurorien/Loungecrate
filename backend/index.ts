@@ -20,7 +20,7 @@ app.use(
   cors()
 );
 
-async function databaseConnection(retryCount = 5, delay = 5000) {
+async function databaseConnection(retryCount = 2, delay = 5000) {
   let client;
   for (let i = 0; i < retryCount; i++) {
     client = new Client({

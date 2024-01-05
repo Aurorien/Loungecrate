@@ -64,28 +64,33 @@ jobs:
           echo "Found backend container ID: $BACKEND_CONTAINER_ID"
           docker logs $BACKEND_CONTAINER_ID
 
+      - name: View frontend container logs
+        run: |
+          echo "Current Docker containers:"
+          docker ps
+
+          echo "Fetching frontend container ID..."
+          FRONTEND_CONTAINER_ID=$(docker ps -qf "name=_frontend_1" | awk 'NR==1{print $1}')
+
+          if [ -z "$FRONTEND_CONTAINER_ID" ]; then
+            echo "Frontend container not found"
+            exit 1
+          fi
+
+          echo "Found frontend container ID: $FRONTEND_CONTAINER_ID"
+          docker logs $FRONTEND_CONTAINER_ID
+
+      - name: Test connectivity to backend from frontend
+        run: docker-compose exec frontend curl --fail http://backend:3000
+
       - name: Check Backend Port
         run: |
-          curl --fail http://localhost:3000/city || (echo "Backend not accessible on port 3000" && exit 1)
+          curl --fail http://backend:3000/city || (echo "Backend not accessible on port 3000" && exit 1)
 
       - name: Check Database Port
         run: |
           nc -zv localhost 5432 || (echo "Database not accessible on port 5432" && exit 1)
 
-      - name: Change to frontend directory
-        run: cd frontend
-
-      - name: Install dependencies
-        run: npm ci
-        working-directory: ./frontend
-
-      - name: Start the Application Server
-        run: npm run dev &
-        working-directory: ./frontend
-
-      - name: Wait for Server and Database
-        run: sleep 30
-
-      - name: Run tests
-        run: npm run test
-        working-directory: ./frontend
+      - name: Run Cypress tests
+        run: |
+          docker-compose exec frontend npm run test
