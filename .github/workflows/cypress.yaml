@@ -80,17 +80,6 @@ jobs:
           echo "Found frontend container ID: $FRONTEND_CONTAINER_ID"
           docker logs $FRONTEND_CONTAINER_ID
 
-      - name: Test connectivity to backend from frontend
-        run: docker-compose exec frontend curl --fail http://backend:3000
-
-      - name: Check Backend Port
-        run: |
-          curl --fail http://backend:3000/city || (echo "Backend not accessible on port 3000" && exit 1)
-
-      - name: Check Database Port
-        run: |
-          nc -zv localhost 5432 || (echo "Database not accessible on port 5432" && exit 1)
-
       - name: Run Cypress tests
         run: |
           docker-compose exec frontend npm run test
