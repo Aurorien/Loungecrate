@@ -12,21 +12,3 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-
-  backend:
-    build: ./backend
-    ports:
-      - "${PORT}:3000"
-    environment:
-      PGURI: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}
-    depends_on:
-      - database
-
-  frontend:
-    build: ./frontend
-    ports:
-      - "5173:5173"
-    environment:
-      - BACKEND_URL=http://backend:3000
-    depends_on:
-      - backend

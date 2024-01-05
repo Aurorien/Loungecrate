@@ -18,27 +18,31 @@ jobs:
         with:
           node-version: "18.x"
 
-      - name: Set up Docker Compose
+      - name: Set up docker-compose for database
         run: docker-compose up -d
         env:
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          PORT: 3000
 
-      - name: Wait for Server and Database
+      - name: Set environment variables
+        run: |
+          echo "PGURI=${{ secrets.PGURI }}" >> $GITHUB_ENV
+          echo "PORT=${{ secrets.PORT }}" >> $GITHUB_ENV
+
+      - name: Wait for Database
         run: sleep 15
 
-      - name: Check containers
+      - name: Check database container
         run: docker ps
 
       - name: View database container logs
         run: |
-          echo "Current Docker containers:"
+          echo "Current Docker container:"
           docker ps
 
           echo "Fetching database container ID..."
-          DATABASE_CONTAINER_ID=$(docker ps -qf "name=_database_1" | awk 'NR==1{print $1}')
+          DATABASE_CONTAINER_ID=$(docker ps -qf "name=database" | awk 'NR==1{print $1}')
 
           if [ -z "$DATABASE_CONTAINER_ID" ]; then
             echo "Database container not found"
@@ -48,54 +52,29 @@ jobs:
           echo "Found database container ID: $DATABASE_CONTAINER_ID"
           docker logs $DATABASE_CONTAINER_ID
 
-      - name: View backend container logs
-        run: |
-          echo "Current Docker containers:"
-          docker ps
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./backend
 
-          echo "Fetching backend container ID..."
-          BACKEND_CONTAINER_ID=$(docker ps -qf "name=_backend_1" | awk 'NR==1{print $1}')
+      - name: Build backend
+        run: npx tsc
+        working-directory: ./backend
 
-          if [ -z "$BACKEND_CONTAINER_ID" ]; then
-            echo "Backend container not found"
-            exit 1
-          fi
+      - name: Start the backend server
+        run: node index.js &
+        working-directory: ./backend
 
-          echo "Found backend container ID: $BACKEND_CONTAINER_ID"
-          docker logs $BACKEND_CONTAINER_ID
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./frontend
 
-      - name: View frontend container logs
-        run: |
-          echo "Current Docker containers:"
-          docker ps
+      - name: Start the application server
+        run: npm run dev &
+        working-directory: ./frontend
 
-          echo "Fetching frontend container ID..."
-          FRONTEND_CONTAINER_ID=$(docker ps -qf "name=_frontend_1" | awk 'NR==1{print $1}')
+      - name: Wait for Server
+        run: sleep 7
 
-          if [ -z "$FRONTEND_CONTAINER_ID" ]; then
-            echo "Frontend container not found"
-            exit 1
-          fi
-
-          echo "Found frontend container ID: $FRONTEND_CONTAINER_ID"
-          docker logs $FRONTEND_CONTAINER_ID
-
-      - name: Run Cypress tests
-        run: |
-          docker compose exec -it frontend npm run test
-
-      - name: View backend container logs
-        run: |
-          echo "Current Docker containers:"
-          docker ps
-
-          echo "Fetching backend container ID..."
-          BACKEND_CONTAINER_ID=$(docker ps -qf "name=_backend_1" | awk 'NR==1{print $1}')
-
-          if [ -z "$BACKEND_CONTAINER_ID" ]; then
-            echo "Backend container not found"
-            exit 1
-          fi
-
-          echo "Found backend container ID: $BACKEND_CONTAINER_ID"
-          docker logs $BACKEND_CONTAINER_ID
+      - name: Run tests
+        run: npm run test
+        working-directory: ./frontend
