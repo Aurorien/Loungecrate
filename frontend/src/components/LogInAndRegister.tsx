@@ -108,16 +108,31 @@ function LogInAndRegister() {
 
       const responseData: ApiResponse = await response.json()
       if (responseData.success) {
-        // Handle the successful registration response
         console.log('Username:', responseData.username)
-        // Additional logic if needed after successful registration
       } else {
-        // Handle unsuccessful registration
         console.error('Registration failed:', responseData.message)
       }
     } catch (error) {
       errorHandling('POST', 'on Register', error)
       throw new Error('Error registering user')
+    }
+  }
+
+  const [feBe, seFeBe] = useState('')
+
+  async function beConnectionFn() {
+    try {
+      const response = await fetch('http://localhost:3000/test')
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      console.log(data)
+      seFeBe(data.message)
+    } catch (error) {
+      console.error('Fetch error:', error)
     }
   }
 
@@ -159,6 +174,16 @@ function LogInAndRegister() {
         <div onClick={toggleFormFn}>
           {toggleForm.login ? 'Register' : 'Log In'}
         </div>
+      </div>
+      <div style={{ display: 'flex' }}>
+        <div
+          id="be-connection"
+          onClick={beConnectionFn}
+          style={{ border: 'solid 2px red', width: '70px', height: '20px' }}
+        >
+          Backend Connection
+        </div>
+        <div>Message: {feBe}</div>
       </div>
     </>
   )

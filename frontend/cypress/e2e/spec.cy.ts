@@ -1,3 +1,11 @@
+describe('Connection Fe Be', () => {
+  it('tries a non-db connected endpoint to confirm connection frontend backend', () => {
+    cy.visit('http://localhost:5173/')
+    cy.get('#be-connection').click()
+    cy.contains('Contact with backend confirmed').should('exist')
+  })
+})
+
 describe('Loungecrate', () => {
   it('is logging in', () => {
     cy.visit('http://localhost:5173/')
