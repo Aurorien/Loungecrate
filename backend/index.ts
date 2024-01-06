@@ -20,27 +20,21 @@ app.use(
   cors()
 );
 
-async function databaseConnection(retryCount = 2, delay = 5000) {
-  let client;
+async function databaseConnection(retryCount = 5, delay = 5000) {
   for (let i = 0; i < retryCount; i++) {
-    client = new Client({
-      connectionString: process.env.PGURI,
-    });
-
     try {
       await client.connect();
       console.log("Database is running and the connection is established.");
-      return; // Connection successful
+      return; // Exit the function if connection is successful
     } catch (error) {
       console.error(
         `Attempt ${i + 1}: Error connecting to the database`,
         error
       );
       if (i < retryCount - 1) {
-        await new Promise((resolve) => setTimeout(resolve, delay)); // Wait before retrying
+        console.log(`Retrying connection in ${delay}ms...`);
+        await new Promise((resolve) => setTimeout(resolve, delay));
       }
-    } finally {
-      await client.end(); // Close client regardless of success or failure
     }
   }
   console.error("All attempts to connect to the database have failed.");
@@ -48,7 +42,14 @@ async function databaseConnection(retryCount = 2, delay = 5000) {
 
 databaseConnection();
 
-//GET cities
+// Debug endpoint for frontend backend connection
+
+app.get("/test", async (_request, response) => {
+  const data = { message: "Contact with backend confirmed" };
+  response.json(data);
+});
+
+// GET cities
 
 app.get("/city", async (_request, response) => {
   try {
@@ -61,7 +62,7 @@ app.get("/city", async (_request, response) => {
   }
 });
 
-//LOGIN
+// LOGIN
 
 const generateSalt = () => {
   return crypto.randomBytes(16).toString("hex");
@@ -76,7 +77,7 @@ const hashPassword = (password: string, salt: string) => {
 
 // Endpoint for log in user
 app.post("/login", async (request, response) => {
-  console.log("Entered th /login endpoint");
+  console.log("Entered the /login endpoint");
   const { username, password } = request.body;
 
   try {
