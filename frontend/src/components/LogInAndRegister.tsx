@@ -175,15 +175,21 @@ function LogInAndRegister() {
           {toggleForm.login ? 'Register' : 'Log In'}
         </div>
       </div>
-      <div style={{ display: 'flex' }}>
+      <div style={{ display: 'flex', margin: '10px' }}>
         <div
           id="be-connection"
           onClick={beConnectionFn}
-          style={{ border: 'solid 2px red', width: '70px', height: '20px' }}
+          style={{
+            border: 'solid 2px red',
+            width: 'minContent',
+            height: 'minContent',
+            marginRight: '10px',
+            cursor: 'pointer'
+          }}
         >
           Backend Connection
         </div>
-        <div>Message: {feBe}</div>
+        {feBe ? <div>Message: {feBe}</div> : null}
       </div>
     </>
   )
