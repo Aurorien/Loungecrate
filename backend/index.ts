@@ -143,14 +143,42 @@ app.post("/register", async (request, response) => {
 
 // GETTING EVENTS FOR LOGGED IN USER
 
-app.get("/userevents", async (request, response) => {
+app.post("/myevents", async (_request, response) => {
   try {
-    const userId = 1;
-    console.log("userId:", userId);
-    const { rows } = await client.query(
-      "SELECT * FROM events WHERE userId = $1",
-      [userId]
-    );
+    const { username } = _request.body;
+    console.log("username:", username);
+    const query = `SELECT
+    e.eventId,
+    e.eventName,
+    e.eventDate,
+    e.eventTime,
+    v.venueName,
+    v.venueSize,
+    e.eventDescription,
+    (
+      SELECT JSON_AGG(
+        JSON_BUILD_OBJECT(
+          'bandId', sub_b.bandId,
+          'bandName', sub_b.bandName,
+          'bandGenre', sub_b.bandGenre,
+          'bandDescription', sub_b.bandDescription,
+          'rider', (
+            SELECT JSON_AGG(
+              JSON_BUILD_OBJECT(
+                'riderItemName', r.riderItemName,
+                'riderItemAmount', r.riderItemAmount
+              )
+            ) FROM rider r WHERE r.riderEventBandId = eb.eventBandId
+          )
+        )
+      ) FROM eventBand eb
+      JOIN band sub_b ON eb.eventBandBandId = sub_b.bandId
+      WHERE eb.eventBandEventId = e.eventId
+    ) AS bandsAndRiders
+  FROM events e
+  JOIN venue v ON e.eventVenueId = v.venueId
+  WHERE e.eventUserName = $1;`;
+    const { rows } = await client.query(query, [username]);
     response.send(rows);
   } catch (error) {
     console.error("Error executing the SQL query:", error);

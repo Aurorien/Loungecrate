@@ -10,7 +10,8 @@ export default defineConfig({
   server: {
     proxy: {
       '/login': 'http://localhost:3000',
-      '/register': 'http://localhost:3000'
+      '/register': 'http://localhost:3000',
+      '/myevents': 'http://localhost:3000'
     }
   },
   build: {
