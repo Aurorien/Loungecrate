@@ -13,7 +13,7 @@ const EventList: React.FC<EventListProps> = ({ events, onEventClick }) => {
         {events.map((event) => (
           <li
             data-testid="event-item"
-            key={event.id}
+            key={event.eventid}
             onClick={() => onEventClick(event)}
           >
             {event.eventname}

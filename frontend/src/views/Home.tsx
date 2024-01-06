@@ -6,6 +6,7 @@ import LogInAndRegister from '../components/LogInAndRegister'
 import EventList from '../components/EventList'
 import EventModal from '../modals/EventModal'
 import { Event } from '../utils/interfaces'
+import { errorHandling } from '../utils/errorHandling'
 import './Home.css'
 
 function Home() {
@@ -28,7 +29,11 @@ function Home() {
         setEvents(data)
       })
       .catch((error) => {
-        console.error('Error fetching events:', error)
+        errorHandling(
+          'POST',
+          'on fetching registred events for logged in user',
+          error
+        )
       })
   }, [username])
 
@@ -38,7 +43,7 @@ function Home() {
 
   const handleCloseModal = (event: Event) => {
     setSelectedEvents((prevSelectedEvents) =>
-      prevSelectedEvents.filter((e) => e.id !== event.id)
+      prevSelectedEvents.filter((e) => e.eventid !== event.eventid)
     )
   }
 
@@ -55,7 +60,7 @@ function Home() {
             <EventList events={events} onEventClick={handleEventClick} />
             {selectedEvents.map((event) => (
               <EventModal
-                key={event.id}
+                key={event.eventid}
                 event={event}
                 onClose={() => handleCloseModal(event)}
               />

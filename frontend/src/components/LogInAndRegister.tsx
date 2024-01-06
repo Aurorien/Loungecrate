@@ -1,12 +1,7 @@
 import { useState } from 'react'
 import { useLogInStore } from '../utils/store'
+import { ApiResponse, FeBeApiResponse } from '../utils/interfaces'
 import { errorHandling } from '../utils/errorHandling'
-
-interface ApiResponse {
-  username: string
-  success: boolean
-  message?: string
-}
 
 function LogInAndRegister() {
   const [formData, setFormData] = useState({
@@ -16,7 +11,8 @@ function LogInAndRegister() {
     [toggleForm, setToggleForm] = useState({
       login: true,
       register: false
-    })
+    }),
+    [errorMessage, setErrorMessage] = useState('')
 
   const { setLoggedIn, setUsername } = useLogInStore()
 
@@ -29,23 +25,22 @@ function LogInAndRegister() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    setErrorMessage('')
 
     if (!formData.password) {
       console.error('Password is undefined or empty')
       return
     }
 
-    if (toggleForm.login) {
-      try {
+    try {
+      if (toggleForm.login) {
         await loginUser(formData)
-      } catch (error) {
-        errorHandling('POST', 'on Log in', error)
-      }
-    } else {
-      try {
+      } else {
         await registerUser(formData)
-      } catch (error) {
-        errorHandling('POST', 'on Register', error)
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        setErrorMessage(error.message)
       }
     }
   }
@@ -118,7 +113,8 @@ function LogInAndRegister() {
     }
   }
 
-  const [feBe, seFeBe] = useState('')
+  const [feBe, setFeBe] = useState(''),
+    [errorFeBe, setErrorFeBe] = useState('')
 
   async function beConnectionFn() {
     try {
@@ -128,11 +124,20 @@ function LogInAndRegister() {
         throw new Error(`HTTP error! Status: ${response.status}`)
       }
 
-      const data = await response.json()
-      console.log(data)
-      seFeBe(data.message)
+      const responsData: FeBeApiResponse = await response.json()
+      console.log(responsData)
+      setFeBe(responsData.message)
     } catch (error) {
-      console.error('Fetch error:', error)
+      errorHandling(
+        'GET',
+        'contact confirming message from api not involving database',
+        error
+      )
+      if (error instanceof Error) {
+        setErrorFeBe(error.message)
+      } else {
+        setErrorFeBe('An unknown error occurred')
+      }
     }
   }
 
@@ -169,6 +174,7 @@ function LogInAndRegister() {
         <button type="submit" id="submit">
           {toggleForm.login ? 'Log In' : 'Register'}
         </button>
+        {errorMessage && <div className="error-message">{errorMessage}</div>}
       </form>
       <div>
         <div onClick={toggleFormFn}>
@@ -190,6 +196,7 @@ function LogInAndRegister() {
           Backend Connection
         </div>
         {feBe ? <div>Message: {feBe}</div> : null}
+        {errorFeBe && <div>{errorFeBe}</div>}
       </div>
     </>
   )

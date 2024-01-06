@@ -1,5 +1,15 @@
+export interface ApiResponse {
+  username: string
+  success: boolean
+  message?: string
+}
+
+export interface FeBeApiResponse {
+  message: string
+}
+
 export interface Event {
-  id: number
+  eventid: number
   eventname: string
   eventdescription: string
 }
