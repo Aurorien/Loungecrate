@@ -1,4 +1,5 @@
 import { Event } from '../utils/interfaces'
+import './EventList.css'
 
 interface EventListProps {
   events: Event[]
@@ -7,7 +8,7 @@ interface EventListProps {
 
 const EventList: React.FC<EventListProps> = ({ events, onEventClick }) => {
   return (
-    <div>
+    <div className="event-list-wrapper">
       <h2 data-testid="event-list-h">My Events</h2>
       <ul data-testid="event-list">
         {events.map((event) => (

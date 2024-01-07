@@ -56,15 +56,20 @@ function Home() {
           <Link id="home-add-event-button" to="/addevent">
             Add event
           </Link>
-          <div>
+          <div className="event-wrapper">
             <EventList events={events} onEventClick={handleEventClick} />
-            {selectedEvents.map((event) => (
-              <EventModal
-                key={event.eventid}
-                event={event}
-                onClose={() => handleCloseModal(event)}
-              />
-            ))}
+            <div>
+              <h2>Event Dashboard</h2>
+              <div>
+                {selectedEvents.map((event) => (
+                  <EventModal
+                    key={event.eventid}
+                    event={event}
+                    onClose={() => handleCloseModal(event)}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         </>
       ) : (

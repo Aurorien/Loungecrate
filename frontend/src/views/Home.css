@@ -4,3 +4,7 @@
   border-radius: 20px;
   padding: 4px 10px 6px 10px;
 }
+
+.event-wrapper {
+  display: flex;
+}
