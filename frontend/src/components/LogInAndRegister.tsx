@@ -152,7 +152,7 @@ function LogInAndRegister() {
         <label htmlFor="username">Username: </label>
         <input
           type="text"
-          id="username"
+          data-testid="username"
           name="username"
           value={formData.username}
           onChange={(e) =>
@@ -163,7 +163,7 @@ function LogInAndRegister() {
         <label htmlFor="password">Password: </label>
         <input
           type="password"
-          id="password"
+          data-testid="password"
           name="password"
           value={formData.password}
           onChange={(e) =>
@@ -171,7 +171,7 @@ function LogInAndRegister() {
           }
           required
         />
-        <button type="submit" id="submit">
+        <button type="submit" data-testid="submit">
           {toggleForm.login ? 'Log In' : 'Register'}
         </button>
         {errorMessage && <div className="error-message">{errorMessage}</div>}

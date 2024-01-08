@@ -9,9 +9,9 @@ Given('Jag är inloggad, är på hemsidan och listan finns', () => {
       username: 'Shadowood'
     }
   }).as('loginRequest')
-  cy.get('#username').type('Shadowood')
-  cy.get('#password').type('testuser')
-  cy.get('#submit').click()
+  cy.get('[data-testid="username"]').type('Shadowood')
+  cy.get('[data-testid="password"]').type('testuser')
+  cy.get('[data-testid="submit"]').click()
   cy.wait('@loginRequest').then((interception) => {
     expect(interception.response.statusCode).to.eq(200)
     expect(interception.response.body.success).to.be.true

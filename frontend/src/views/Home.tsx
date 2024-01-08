@@ -53,7 +53,11 @@ function Home() {
         <>
           <Nav />
           <h1>Loungecrate</h1>
-          <Link id="home-add-event-button" to="/addevent">
+          <Link
+            data-testid="home-add-event-button"
+            className="home-add-event-button"
+            to="/addevent"
+          >
             Add event
           </Link>
           <div className="event-wrapper">

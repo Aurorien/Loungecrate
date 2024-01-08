@@ -9,11 +9,11 @@ describe('Connection Fe Be', () => {
 describe('Loungecrate', () => {
   it('is logging in', () => {
     cy.visit('http://localhost:5173/')
-    cy.get('#username').type('Shadowood')
-    cy.get('#password').type('testuser')
+    cy.get('[data-testid="username"]').type('Shadowood')
+    cy.get('[data-testid="password"]').type('testuser')
     console.log('Submitting login form')
     cy.intercept('POST', '/login').as('postData')
-    cy.get('#submit').click()
+    cy.get('[data-testid="submit"]').click()
     cy.wait('@postData').then((interception) => {
       console.log('Login request intercepted', interception)
       const responseBody = interception.response.body
