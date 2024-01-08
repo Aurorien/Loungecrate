@@ -78,3 +78,13 @@ jobs:
       - name: Run tests
         run: NODE_ENV=test npm run test
         working-directory: ./frontend
+
+      - name: Generate Coverage Report
+        run: npm run generate-report
+        working-directory: ./frontend
+
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-report
+          path: ./frontend/coverage/lcov-report/

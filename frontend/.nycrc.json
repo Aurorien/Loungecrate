@@ -2,6 +2,10 @@
   "all": true,
   "extends": "@istanbuljs/nyc-config-typescript",
   "check-coverage": true,
+  "lines": 10,
+  "statements": 10,
+  "functions": 10,
+  "branches": 10,
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["cypress/**/*.*", "**/*.d.ts", "**/*.cy.tsx", "**/*.cy.ts"]
 }
