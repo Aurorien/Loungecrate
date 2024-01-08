@@ -1,0 +1,27 @@
+.add-event-name-label {
+  font-weight: bold;
+  padding-bottom: 4px;
+}
+
+.add-event-name-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+}
+
+.add-event-submit {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.add-event-submit-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 35px;
+}
+
+.dropdown-wrapper {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 30px;
+}
