@@ -8,6 +8,7 @@ const {
   createEsbuildPlugin
 } = require('@badeball/cypress-cucumber-preprocessor/esbuild')
 const { defineConfig } = require('cypress')
+const codeCoverageTask = require('@cypress/code-coverage/task')
 
 module.exports = defineConfig({
   e2e: {
@@ -18,24 +19,13 @@ module.exports = defineConfig({
       on('file:preprocessor', bundler)
 
       await addCucumberPreprocessorPlugin(on, config)
+      codeCoverageTask(on, config)
 
       return config
     },
     specPattern: [
-      // E2E-filer Cypress letar efter som standard
       'cypress/e2e/**/*.cy.{js,jsx,ts,tsx}',
-      // Tillägg för Cucumber
       'cypress/e2e/**/*.feature'
     ]
   }
 })
-
-// import { defineConfig } from "cypress";
-
-// export default defineConfig({
-//   e2e: {
-//     setupNodeEvents(on, config) {
-//       // implement node event listeners here
-//     },
-//   },
-// });
