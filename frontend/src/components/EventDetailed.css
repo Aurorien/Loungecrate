@@ -1,4 +1,4 @@
-.event-modal {
+.event-detailed {
   position: absolute;
   top: 0;
   left: 0;
@@ -7,18 +7,8 @@
   cursor: pointer;
 }
 
-.modal-content {
+.event-detailed-content {
   background-color: rgb(147, 224, 226);
   color: rgb(23, 23, 23);
   padding: 20px;
-}
-
-.modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.3);
-  z-index: 999;
 }

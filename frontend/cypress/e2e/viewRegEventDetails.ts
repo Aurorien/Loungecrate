@@ -26,18 +26,18 @@ When('Jag klickar på ett event', () => {
 })
 
 Then(
-  'Ska en modal dyka upp med samma rubrik som eventet och innehålla detaljerad info om eventet',
+  'Ska en ruta dyka upp med samma rubrik som eventet och innehålla detaljerad info om eventet',
   () => {
-    cy.get('[data-testid="event-modal"]').should('be.visible')
+    cy.get('[data-testid="event-detailed"]').should('be.visible')
     cy.get('[data-testid="event-item"]')
       .first()
       .invoke('text')
       .then((eventTitle) => {
-        cy.get('[data-testid="event-modal-title"]').should(
+        cy.get('[data-testid="event-detailed-title"]').should(
           'have.text',
           eventTitle
         )
       })
-    cy.get('[data-testid="event-modal-detail"]').should('exist')
+    cy.get('[data-testid="event-detailed-detail"]').should('exist')
   }
 )

@@ -1,15 +1,19 @@
 import { useEffect, useState } from 'react'
 import { Event } from '../utils/interfaces'
 import useDragger from '../utils/useDragger'
-import './EventModal.css'
+import './EventDetailed.css'
 
-interface EventModalProps {
+interface EventDetailedProps {
   event: Event
   id: string
   onClose: () => void
 }
 
-const EventModal: React.FC<EventModalProps> = ({ event, id, onClose }) => {
+const EventDetailed: React.FC<EventDetailedProps> = ({
+  event,
+  id,
+  onClose
+}) => {
   useDragger(id)
   const [zIndex, setZIndex] = useState(1)
 
@@ -26,17 +30,20 @@ const EventModal: React.FC<EventModalProps> = ({ event, id, onClose }) => {
   return (
     <div>
       <div
-        data-testid="event-modal"
+        data-testid="event-detailed"
         id={id}
         style={{ zIndex }}
-        className="event-modal"
+        className="event-detailed"
         onClick={bringToFront}
       >
-        <div className="modal-content">
-          <h2 data-testid="event-modal-title" className="event-modal-title">
+        <div className="event-detailed-content">
+          <h2
+            data-testid="event-detailed-title"
+            className="event-detailed-title"
+          >
             {event.eventname}
           </h2>
-          <p data-testid="event-modal-detail">{event.eventdescription}</p>
+          <p data-testid="event-detailed-detail">{event.eventdescription}</p>
           <button onClick={onClose}>Close</button>
         </div>
       </div>
@@ -44,4 +51,4 @@ const EventModal: React.FC<EventModalProps> = ({ event, id, onClose }) => {
   )
 }
 
-export default EventModal
+export default EventDetailed

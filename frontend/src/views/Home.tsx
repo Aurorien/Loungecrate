@@ -4,7 +4,7 @@ import { useLogInStore } from '../utils/store'
 import Nav from '../components/Nav'
 import LogInAndRegister from '../components/LogInAndRegister'
 import EventList from '../components/EventList'
-import EventModal from '../modals/EventModal'
+import EventDetailed from '../components/EventDetailed'
 import { Event } from '../utils/interfaces'
 import { errorHandling } from '../utils/errorHandling'
 import './Home.css'
@@ -41,7 +41,7 @@ function Home() {
     setSelectedEvents((prevSelectedEvents) => [...prevSelectedEvents, event])
   }
 
-  const handleCloseModal = (event: Event) => {
+  const handleCloseED = (event: Event) => {
     setSelectedEvents((prevSelectedEvents) =>
       prevSelectedEvents.filter((e) => e.eventid !== event.eventid)
     )
@@ -60,13 +60,13 @@ function Home() {
             <EventList events={events} onEventClick={handleEventClick} />
             <div>
               <h2>Event Dashboard</h2>
-              <div className="event-modal-container">
+              <div className="event-detailed-container">
                 {selectedEvents.map((event) => (
-                  <EventModal
+                  <EventDetailed
                     key={event.eventid}
-                    id={`event-modal-${event.eventid}`}
+                    id={`event-detailed-${event.eventid}`}
                     event={event}
-                    onClose={() => handleCloseModal(event)}
+                    onClose={() => handleCloseED(event)}
                   />
                 ))}
               </div>

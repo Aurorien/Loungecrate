@@ -9,7 +9,7 @@
   display: flex;
 }
 
-.event-modal-container {
+.event-detailed-container {
   position: relative;
   border: 2px solid blueviolet;
   width: 80vw;
