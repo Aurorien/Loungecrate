@@ -60,10 +60,11 @@ function Home() {
             <EventList events={events} onEventClick={handleEventClick} />
             <div>
               <h2>Event Dashboard</h2>
-              <div>
+              <div className="event-modal-container">
                 {selectedEvents.map((event) => (
                   <EventModal
                     key={event.eventid}
+                    id={`event-modal-${event.eventid}`}
                     event={event}
                     onClose={() => handleCloseModal(event)}
                   />

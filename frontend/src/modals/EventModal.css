@@ -7,14 +7,6 @@
   cursor: pointer;
 }
 
-.event-modal-container {
-  position: relative;
-  border: 2px solid blueviolet;
-  width: 80vw;
-  height: 100vh;
-  overflow: hidden;
-}
-
 .modal-content {
   background-color: rgb(147, 224, 226);
   color: rgb(23, 23, 23);

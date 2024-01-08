@@ -8,3 +8,11 @@
 .event-wrapper {
   display: flex;
 }
+
+.event-modal-container {
+  position: relative;
+  border: 2px solid blueviolet;
+  width: 80vw;
+  height: 100vh;
+  overflow: hidden;
+}
