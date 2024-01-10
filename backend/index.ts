@@ -16,16 +16,22 @@ const app = express(),
 
 app.use(
   express.static(path.join(path.resolve(), "public")),
-  express.json(),
+  express.json({ type: "application/json; charset=utf-8" }),
   cors()
 );
+
+app.use((req, res, next) => {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  next();
+});
 
 async function databaseConnection(retryCount = 5, delay = 5000) {
   for (let i = 0; i < retryCount; i++) {
     try {
       await client.connect();
+      await client.query("SET client_encoding TO 'UTF8'");
       console.log("Database is running and the connection is established.");
-      return; // Exit the function if connection is successful
+      return;
     } catch (error) {
       console.error(
         `Attempt ${i + 1}: Error connecting to the database`,
@@ -41,26 +47,6 @@ async function databaseConnection(retryCount = 5, delay = 5000) {
 }
 
 databaseConnection();
-
-// Debug endpoint for frontend backend connection
-
-app.get("/test", async (_request, response) => {
-  const data = { message: "Contact with backend confirmed" };
-  response.json(data);
-});
-
-// GET cities
-
-app.get("/city", async (_request, response) => {
-  try {
-    const sql = `SELECT * FROM city;`;
-    const { rows } = await client.query(sql);
-    response.send(rows);
-  } catch (error) {
-    console.error("Error executing the SQL query:", error);
-    response.status(500).send("Internal Server Error");
-  }
-});
 
 // LOGIN
 
@@ -141,7 +127,7 @@ app.post("/register", async (request, response) => {
   }
 });
 
-// GETTING EVENTS FOR LOGGED IN USER
+// Endpoint for getting events for logged in user
 
 app.post("/myevents", async (_request, response) => {
   try {
@@ -185,6 +171,84 @@ app.post("/myevents", async (_request, response) => {
     response.status(500).send("Internal Server Error");
   }
 });
+
+// Endpoint for populating dropdowns
+
+app.get("/dropdown-data", async (_request, response) => {
+  try {
+    const citiesQuery = "SELECT cityname FROM city";
+    const venuesQuery = "SELECT venuename FROM venue";
+    const bandsQuery = "SELECT bandname FROM band";
+
+    const [cityResults, venueResults, bandResults] = await Promise.all([
+      client.query(citiesQuery),
+      // .then((result) => {
+      //   console.log("City Query Result:", result.rows);
+      //   // rest of your code...
+      // })
+      // .catch((error) => {
+      //   console.error("Database Query Error:", error);
+      // }),
+      client.query(venuesQuery),
+      client.query(bandsQuery),
+    ]);
+
+    const cities = cityResults.rows.map(
+      (row: { cityname: any }) => row.cityname
+    );
+    const venues = venueResults.rows.map((row) => row.venuename);
+    const bands = bandResults.rows.map((row) => row.bandname);
+
+    console.log("cities", cities);
+    console.log("venues", venues);
+    console.log("bands", bands);
+    console.log("Hölö är gött");
+
+    response.setHeader("Content-Type", "application/json; charset=utf-8");
+    response.json({ cities, venues, bands });
+  } catch (error) {
+    console.error("Error executing the SQL query:", error);
+    response.status(500).send("Error retrieving data");
+  }
+});
+
+///////////////////////////////////////////////////////////
+// Debug endpoints
+
+app.get("/test-swedish", (_req, res) => {
+  res.setHeader("Content-Type", "text/plain; charset=utf-8");
+  res.send("Swedish: åäö ÅÄÖ");
+});
+
+app.get("/city", async (_request, response) => {
+  try {
+    const sql = `SELECT * FROM city;`;
+    const { rows } = await client.query(sql);
+    response.send(rows);
+  } catch (error) {
+    console.error("Error executing the SQL query:", error);
+    response.status(500).send("Internal Server Error");
+  }
+});
+
+app.get("/citytest", async (_request, response) => {
+  try {
+    const sql = `SELECT * FROM city;`;
+    const result = await client.query(sql);
+    response.setHeader("Content-Type", "text/plain; charset=utf-8");
+    response.send(JSON.stringify(result.rows, null, 2));
+  } catch (error) {
+    console.error("Error executing the SQL query:", error);
+    response.status(500).send("Internal Server Error");
+  }
+});
+
+app.get("/test", async (_request, response) => {
+  const data = { message: "Contact with backend confirmed" };
+  response.json(data);
+});
+
+///////////////////////////////////////////////////////////
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);

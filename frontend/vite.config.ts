@@ -22,7 +22,8 @@ export default defineConfig({
     proxy: {
       '/login': 'http://localhost:3000',
       '/register': 'http://localhost:3000',
-      '/myevents': 'http://localhost:3000'
+      '/myevents': 'http://localhost:3000',
+      '/dropdown-data': 'http://localhost:3000'
     }
   },
   build: {
