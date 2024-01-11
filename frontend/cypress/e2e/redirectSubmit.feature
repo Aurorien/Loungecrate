@@ -5,4 +5,4 @@ Submit-knappen på AddEvent-formuläret ska visa en text som indikerar att event
 Scenario: Klick på Submit
   Given Jag är på Add Event och jag har fyllt i formuläret så att Submit-knappen är enabled
   When Jag klickar på Submit-knappen
-  Then Bekräftande text och därefter ska nya eventet finnas med i My events på hemsidan
+  Then Bekräftande text och därefter man slussas till hemsidan och det nya eventet ska finnas med i My events på hemsidan
