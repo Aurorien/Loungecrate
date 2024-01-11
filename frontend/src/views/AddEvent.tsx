@@ -28,7 +28,6 @@ function AddEvent() {
         setAllVenues(
           data.venues.filter((venue: string | null) => venue != null)
         )
-        // setVenues(data.venues.filter((venue: string | null) => venue != null))
         setBands(data.bands.filter((band: string | null) => band != null))
       })
       .catch((error) => {
@@ -38,18 +37,27 @@ function AddEvent() {
 
   console.log('bands', bands)
 
-  // const handleCitySelect = (city: DropdownOption) => {
-  //   setSelectedCity(city)
-  // }
-
-  // const handleCitySelect = (city: DropdownOption) => {
-  //   setSelectedCity(city)
-  //   const filteredVenues = allVenues.filter((venue) => venue.cityid === city.id) // Filter venues based on city
-  //   setVenues(filteredVenues)
-  // }
+  const isFormValid = () => {
+    return (
+      eventName.trim() !== '' &&
+      eventDescription.trim() !== '' &&
+      eventDate.trim() !== '' &&
+      eventTime.trim() !== '' &&
+      selectedCity != null &&
+      selectedVenue != null &&
+      selectedBands.length > 0
+    )
+  }
 
   const handleCitySelect = (city: DropdownOption) => {
-    setSelectedCity(city)
+    if (city && city.name.trim() !== '') {
+      setSelectedCity(city)
+    } else {
+      setSelectedCity(undefined)
+    }
+
+    handleVenueSelect(null)
+    setSelectedVenue(null)
 
     console.log('selectedVenue', selectedVenue)
 
@@ -66,8 +74,14 @@ function AddEvent() {
     }
   }
 
-  const handleVenueSelect = (venue: DropdownOption) => {
-    setSelectedVenue(venue)
+  const handleVenueSelect = (venue: DropdownOption | null) => {
+    if (venue) {
+      console.log('Venue selected:', venue)
+      setSelectedVenue(venue)
+    } else {
+      console.log('Venue selection cleared')
+      setSelectedVenue(null)
+    }
   }
 
   const handleAddBand = (band: Band) => {
@@ -75,6 +89,18 @@ function AddEvent() {
       setSelectedBands([...selectedBands, band])
     }
   }
+
+  const formValues = {
+    eventName,
+    eventDescription,
+    eventDate,
+    eventTime,
+    eventVenueId: selectedVenue?.id,
+    eventUserName: username,
+    selectedBands: selectedBands.map((band) => band.id)
+  }
+
+  console.log('formValues', formValues)
 
   const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault()
@@ -84,23 +110,12 @@ function AddEvent() {
       //   eventDescription,
       //   eventDate,
       //   eventTime,
-      //   eventCityId: selectedCity?.id,
       //   eventVenueId: selectedVenue?.id,
       //   eventUserName: username,
       //   selectedBands: selectedBands.map((band) => band.id)
       // }
 
-      const formValues = {
-        eventName,
-        eventDescription,
-        eventDate,
-        eventTime,
-        eventVenueId: selectedVenue?.id,
-        eventUserName: username,
-        selectedBands: selectedBands.map((band) => band.id)
-      }
-
-      console.log('formValues', formValues)
+      // console.log('formValues', formValues)
 
       const response = await fetch('/addevent', {
         method: 'POST',
@@ -129,21 +144,25 @@ function AddEvent() {
           value={eventName}
           onChange={(e) => setEventName(e.target.value)}
           placeholder="Event Name"
+          required
         />
         <textarea
           value={eventDescription}
           onChange={(e) => setEventDescription(e.target.value)}
           placeholder="Event Description"
+          required
         ></textarea>
         <input
           type="date"
           value={eventDate}
           onChange={(e) => setEventDate(e.target.value)}
+          required
         />
         <input
           type="time"
           value={eventTime}
           onChange={(e) => setEventTime(e.target.value)}
+          required
         />
         <DropdownFiltered
           label="Select a city"
@@ -155,11 +174,16 @@ function AddEvent() {
           options={venues}
           onSelect={handleVenueSelect}
           disabled={!selectedCity}
+          resetFilterKey={selectedCity?.id}
         />
         <BandList bands={bands} onAddBand={handleAddBand} />
         <SelectedBands selectedBands={selectedBands} />
 
-        <button type="submit" className="add-event-submit">
+        <button
+          type="submit"
+          disabled={!isFormValid()}
+          className="add-event-submit"
+        >
           Submit
         </button>
       </form>
@@ -168,76 +192,3 @@ function AddEvent() {
 }
 
 export default AddEvent
-
-// import { useEffect, useState } from 'react'
-// import DropdownFiltered from '../components/DropdownFiltered'
-// import './AddEvent.css'
-
-// function AddEvent() {
-//   const [cities, setCities] = useState<string[]>([])
-//   const [venues, setVenues] = useState<string[]>([])
-//   const [bands, setBands] = useState<string[]>([])
-
-//   useEffect(() => {
-//     fetch('/dropdown-data')
-//       .then((response) => response.json())
-//       .then((data) => {
-//         setCities(data.cities.filter((city: string | null) => city != null))
-//         setVenues(data.venues.filter((venue: string | null) => venue != null))
-//         setBands(data.bands.filter((band: string | null) => band != null))
-//       })
-//       .catch((error) => {
-//         console.error('Error fetching dropdown data:', error)
-//       })
-//   }, [])
-
-//   const handleCitySelect = (city: string) => {
-//     console.log(`City selected: ${city}`)
-//   }
-
-//   const handleVenueSelect = (venue: string) => {
-//     console.log(`Venue selected: ${venue}`)
-//   }
-
-//   const handleBandSelect = (band: string) => {
-//     console.log(`Band selected: ${band}`)
-//   }
-
-//   return (
-//     <>
-//       <h1 className="add-event-h1">Add event</h1>
-//       <form>
-//         <div className="add-event-name-wrapper">
-//           <label className="add-event-name-label">Event name:</label>
-//           <input type="text" />
-//         </div>
-//         <div className="dropdown-wrapper">
-//           <DropdownFiltered
-//             label="Add a city to the event"
-//             options={cities}
-//             onSelect={handleCitySelect}
-//           />
-
-//           <DropdownFiltered
-//             label="Add a venue to the event"
-//             options={venues}
-//             onSelect={handleVenueSelect}
-//           />
-
-//           <DropdownFiltered
-//             label="Add bands to the event"
-//             options={bands}
-//             onSelect={handleBandSelect}
-//           />
-//         </div>
-//         <div className="add-event-submit-wrapper">
-//           <button type="submit" className="add-event-submit">
-//             Submit
-//           </button>
-//         </div>
-//       </form>
-//     </>
-//   )
-// }
-
-// export default AddEvent
