@@ -99,7 +99,7 @@ function AddEvent() {
         selectedBands: selectedBands.map((band) => band.id)
       }
 
-      // console.log('formValues', formValues)
+      console.log('formValues', formValues)
 
       const response = await fetch('/addevent', {
         method: 'POST',

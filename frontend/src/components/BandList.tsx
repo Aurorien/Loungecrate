@@ -32,7 +32,6 @@ const BandList: React.FC<BandListProps> = ({ bands, onAddBand }) => {
         placeholder="Search Bands"
         value={filter}
         onChange={handleFilterChange}
-        required
       />
       <ul>
         {filteredBands.map((band) => (

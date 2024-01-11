@@ -92,7 +92,6 @@ const Dropdown: React.FC<DropdownProps> = ({
         onFocus={handleFocus}
         placeholder="Filter search"
         disabled={disabled}
-        required
       />
       {showOptions && (
         <ul className="dropdown-list">
