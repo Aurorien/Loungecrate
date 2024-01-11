@@ -247,7 +247,7 @@ app.post("/addevent", async (_request, response) => {
 app.get("/dropdowns", async (_request, response) => {
   try {
     const citiesQuery = "SELECT cityid, cityname FROM city";
-    const venuesQuery = "SELECT venueid, venuename FROM venue";
+    const venuesQuery = "SELECT venueid, venuename, venuecityid FROM venue";
     const bandsQuery =
       "SELECT band.bandid, band.bandname, band.bandgenre, band.banddescription, city.cityname FROM band JOIN city ON band.bandcityid = city.cityid;";
 
@@ -271,6 +271,7 @@ app.get("/dropdowns", async (_request, response) => {
     const venues = venueResults.rows.map((row) => ({
       id: row.venueid,
       name: row.venuename,
+      cityid: row.venuecityid,
     }));
     const bands = bandResults.rows.map((row) => ({
       id: row.bandid,

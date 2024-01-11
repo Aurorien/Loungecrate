@@ -4,15 +4,22 @@ import './DropdownFiltered.css'
 export interface DropdownOption {
   id: number
   name: string
+  cityid?: number
 }
 
 interface DropdownProps {
   label: string
   options: DropdownOption[]
   onSelect: (value: DropdownOption) => void
+  disabled?: boolean
 }
 
-const Dropdown: React.FC<DropdownProps> = ({ label, options, onSelect }) => {
+const Dropdown: React.FC<DropdownProps> = ({
+  label,
+  options,
+  onSelect,
+  disabled = false
+}) => {
   const [filter, setFilter] = useState<string>('')
   const [showOptions, setShowOptions] = useState<boolean>(false)
 
@@ -24,7 +31,7 @@ const Dropdown: React.FC<DropdownProps> = ({ label, options, onSelect }) => {
 
   const handleSelect = (option: DropdownOption) => {
     onSelect(option)
-    setFilter(option.name) // Set the filter to the selected option's name
+    setFilter(option.name)
     setShowOptions(false)
   }
 
@@ -62,6 +69,7 @@ const Dropdown: React.FC<DropdownProps> = ({ label, options, onSelect }) => {
         onChange={handleFilterChange}
         onFocus={handleFocus}
         placeholder="Filter search"
+        disabled={disabled}
       />
       {showOptions && (
         <ul className="dropdown-list">

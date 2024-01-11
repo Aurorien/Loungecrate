@@ -8,23 +8,27 @@ import SelectedBands from '../components/SelectedBands'
 
 function AddEvent() {
   const { username } = useLogInStore()
-  // const [cities, setCities] = useState<DropdownOption[]>([])
+  const [cities, setCities] = useState<DropdownOption[]>([])
+  const [allVenues, setAllVenues] = useState<DropdownOption[]>([])
   const [venues, setVenues] = useState<DropdownOption[]>([])
   const [bands, setBands] = useState<Band[]>([])
   const [eventName, setEventName] = useState('')
   const [eventDescription, setEventDescription] = useState('')
   const [eventDate, setEventDate] = useState('')
   const [eventTime, setEventTime] = useState('')
-  // const [selectedCity, setSelectedCity] = useState<DropdownOption>()
-  const [selectedVenue, setSelectedVenue] = useState<DropdownOption>()
+  const [selectedCity, setSelectedCity] = useState<DropdownOption>()
+  const [selectedVenue, setSelectedVenue] = useState<DropdownOption | null>()
   const [selectedBands, setSelectedBands] = useState<Band[]>([])
 
   useEffect(() => {
     fetch('/dropdowns')
       .then((response) => response.json())
       .then((data) => {
-        // setCities(data.cities.filter((city: string | null) => city != null))
-        setVenues(data.venues.filter((venue: string | null) => venue != null))
+        setCities(data.cities.filter((city: string | null) => city != null))
+        setAllVenues(
+          data.venues.filter((venue: string | null) => venue != null)
+        )
+        // setVenues(data.venues.filter((venue: string | null) => venue != null))
         setBands(data.bands.filter((band: string | null) => band != null))
       })
       .catch((error) => {
@@ -37,6 +41,30 @@ function AddEvent() {
   // const handleCitySelect = (city: DropdownOption) => {
   //   setSelectedCity(city)
   // }
+
+  // const handleCitySelect = (city: DropdownOption) => {
+  //   setSelectedCity(city)
+  //   const filteredVenues = allVenues.filter((venue) => venue.cityid === city.id) // Filter venues based on city
+  //   setVenues(filteredVenues)
+  // }
+
+  const handleCitySelect = (city: DropdownOption) => {
+    setSelectedCity(city)
+
+    console.log('selectedVenue', selectedVenue)
+
+    if (city.id) {
+      console.log('allVenues', allVenues)
+
+      const filteredVenues = allVenues.filter(
+        (venue) => venue.cityid === city.id
+      )
+      setVenues(filteredVenues)
+      console.log('filteredVenues', filteredVenues)
+    } else {
+      setVenues([])
+    }
+  }
 
   const handleVenueSelect = (venue: DropdownOption) => {
     setSelectedVenue(venue)
@@ -117,15 +145,16 @@ function AddEvent() {
           value={eventTime}
           onChange={(e) => setEventTime(e.target.value)}
         />
-        {/* <DropdownFiltered
+        <DropdownFiltered
           label="Select a city"
           options={cities}
           onSelect={handleCitySelect}
-        /> */}
+        />
         <DropdownFiltered
           label="Select a venue"
           options={venues}
           onSelect={handleVenueSelect}
+          disabled={!selectedCity}
         />
         <BandList bands={bands} onAddBand={handleAddBand} />
         <SelectedBands selectedBands={selectedBands} />
