@@ -79,9 +79,9 @@ VALUES
 INSERT INTO city (cityName)
 VALUES
   ('TBA'),
-  ('Göteborg'),
+  ('Gothenburg'),
   ('Tokyo'),
-  ('Lövstabruk'),
+  ('Leufstabruk'),
   ('Berlin');
 
 INSERT INTO venue (venueName, venueSize, venueCityId)
@@ -102,17 +102,17 @@ VALUES
 INSERT INTO events (eventName, eventDescription, eventDate, eventTime, eventVenueId, eventUserName)
 VALUES
   ('The Cave', 'Welcome into the dark and wonderous space where bats sings in choir.', '2025-04-28', '19:00', 3, 'Shadowood'),
-  ('Klubb Twilight', 'En på en resa i ljudlandskap med Myceline och Idril!', '2025-09-03', '19:00', 4, 'Shadowood');
+  ('Club Twilight', 'A journey in soundscape with Myceline and Idril!', '2025-09-03', '19:00', 4, 'Shadowood');
 
 INSERT INTO eventBand (eventBandEventId, eventBandBandId)
 VALUES
-  (1, 3), -- 1: Yggrasil på The Cave
-  (2, 2), -- 2: Myceline på Klubb Twilight
-  (2, 4); -- 3: Idril på Klubb Twilight
+  (1, 3), -- 1: The Cave, Yggrasil
+  (2, 2), -- 2: Club Twilight, Myceline
+  (2, 4); -- 3: Club Twilight, Idril
 
 
 INSERT INTO rider (riderItemName, riderItemAmount, riderEventBandId)
 VALUES
   ('cola-soda', '1L', 1), ('fullgrain chocolate cookies', '10 pcs', 1),
-  ('skumsvampar', '1/2 kg', 2), ('spenatsmoothie', '4 st.', 2), ('patchouli-rökelse', '1 st.', 2),
-  ('melonsoda', 'ett stort glas', 3), ('luftfuktare', '1 st.', 3);
+  ('marshmallow mushroom', '1/2 kg', 2), ('spinach smoothie', '4 pcs', 2), ('patchouli incense', '1 pcs', 2),
+  ('melonsoda', 'one big glass', 3), ('humidifier', '1 pcs', 3);

@@ -16,20 +16,20 @@ const app = express(),
 
 app.use(
   express.static(path.join(path.resolve(), "public")),
-  express.json({ type: "application/json; charset=utf-8" }),
+  express.json(),
   cors()
 );
 
-app.use((req, res, next) => {
-  res.setHeader("Content-Type", "application/json; charset=utf-8");
-  next();
-});
+// app.use((req, res, next) => {
+//   res.setHeader("Content-Type", "application/json; charset=utf-8");
+//   next();
+// });
 
 async function databaseConnection(retryCount = 5, delay = 5000) {
   for (let i = 0; i < retryCount; i++) {
     try {
       await client.connect();
-      await client.query("SET client_encoding TO 'UTF8'");
+      // await client.query("SET client_encoding TO 'UTF8'");
       console.log("Database is running and the connection is established.");
       return;
     } catch (error) {
@@ -199,10 +199,10 @@ app.get("/dropdown-data", async (_request, response) => {
     const venues = venueResults.rows.map((row) => row.venuename);
     const bands = bandResults.rows.map((row) => row.bandname);
 
-    console.log("cities", cities);
-    console.log("venues", venues);
-    console.log("bands", bands);
-    console.log("Hölö är gött");
+    // console.log("cities", cities);
+    // console.log("venues", venues);
+    // console.log("bands", bands);
+    // console.log("Hölö är gött");
 
     response.setHeader("Content-Type", "application/json; charset=utf-8");
     response.json({ cities, venues, bands });
@@ -215,38 +215,38 @@ app.get("/dropdown-data", async (_request, response) => {
 ///////////////////////////////////////////////////////////
 // Debug endpoints
 
-app.get("/test-swedish", (_req, res) => {
-  res.setHeader("Content-Type", "text/plain; charset=utf-8");
-  res.send("Swedish: åäö ÅÄÖ");
-});
+// app.get("/test-swedish", (_req, res) => {
+//   res.setHeader("Content-Type", "text/plain; charset=utf-8");
+//   res.send("Swedish: åäö ÅÄÖ");
+// });
 
-app.get("/city", async (_request, response) => {
-  try {
-    const sql = `SELECT * FROM city;`;
-    const { rows } = await client.query(sql);
-    response.send(rows);
-  } catch (error) {
-    console.error("Error executing the SQL query:", error);
-    response.status(500).send("Internal Server Error");
-  }
-});
+// app.get("/city", async (_request, response) => {
+//   try {
+//     const sql = `SELECT * FROM city;`;
+//     const { rows } = await client.query(sql);
+//     response.send(rows);
+//   } catch (error) {
+//     console.error("Error executing the SQL query:", error);
+//     response.status(500).send("Internal Server Error");
+//   }
+// });
 
-app.get("/citytest", async (_request, response) => {
-  try {
-    const sql = `SELECT * FROM city;`;
-    const result = await client.query(sql);
-    response.setHeader("Content-Type", "text/plain; charset=utf-8");
-    response.send(JSON.stringify(result.rows, null, 2));
-  } catch (error) {
-    console.error("Error executing the SQL query:", error);
-    response.status(500).send("Internal Server Error");
-  }
-});
+// app.get("/citytest", async (_request, response) => {
+//   try {
+//     const sql = `SELECT * FROM city;`;
+//     const result = await client.query(sql);
+//     response.setHeader("Content-Type", "text/plain; charset=utf-8");
+//     response.send(JSON.stringify(result.rows, null, 2));
+//   } catch (error) {
+//     console.error("Error executing the SQL query:", error);
+//     response.status(500).send("Internal Server Error");
+//   }
+// });
 
-app.get("/test", async (_request, response) => {
-  const data = { message: "Contact with backend confirmed" };
-  response.json(data);
-});
+// app.get("/test", async (_request, response) => {
+//   const data = { message: "Contact with backend confirmed" };
+//   response.json(data);
+// });
 
 ///////////////////////////////////////////////////////////
 
