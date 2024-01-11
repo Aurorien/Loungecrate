@@ -14,15 +14,17 @@ interface DropdownProps {
   disabled?: boolean
   resetFilterKey?: number | null
   selectedValue?: DropdownOption | null
+  testId?: string
 }
 
-const Dropdown: React.FC<DropdownProps> = ({
+const DropdownFiltered: React.FC<DropdownProps> = ({
   label,
   options,
   onSelect,
   selectedValue,
   disabled = false,
-  resetFilterKey
+  resetFilterKey,
+  testId
 }) => {
   console.log('Resetting filter for key:', resetFilterKey)
   const [filter, setFilter] = useState<string>('')
@@ -85,6 +87,7 @@ const Dropdown: React.FC<DropdownProps> = ({
       <label className="dropdown-label">{label}</label>
       {renderSelectedValue()}
       <input
+        data-testid={`${testId}-input`}
         className="dropdown-input"
         type="text"
         value={filter}
@@ -94,7 +97,7 @@ const Dropdown: React.FC<DropdownProps> = ({
         disabled={disabled}
       />
       {showOptions && (
-        <ul className="dropdown-list">
+        <ul data-testid={`${testId}-list`} className="dropdown-list">
           {filteredOptions.map((option, index) => (
             <li
               key={index}
@@ -110,4 +113,4 @@ const Dropdown: React.FC<DropdownProps> = ({
   )
 }
 
-export default Dropdown
+export default DropdownFiltered

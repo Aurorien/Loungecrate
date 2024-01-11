@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import './BandsList.css'
+import './BandList.css'
 
 export interface Band {
   id: number
@@ -33,14 +33,18 @@ const BandList: React.FC<BandListProps> = ({ bands, onAddBand }) => {
         value={filter}
         onChange={handleFilterChange}
       />
-      <ul>
+      <ul data-testid="bandlist">
         {filteredBands.map((band) => (
           <li key={band.id}>
             <span>
               {band.name} - {band.genre} - {band.city}
             </span>
             <p>{band.description}</p>
-            <div className="bandslist-add" onClick={() => onAddBand(band)}>
+            <div
+              data-testid="bandlist-add"
+              className="bandlist-add"
+              onClick={() => onAddBand(band)}
+            >
               Add
             </div>
           </li>

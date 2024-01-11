@@ -99,7 +99,7 @@ function AddEvent() {
         selectedBands: selectedBands.map((band) => band.id)
       }
 
-      console.log('formValues', formValues)
+      // console.log('formValues', formValues)
 
       const response = await fetch('/addevent', {
         method: 'POST',
@@ -124,6 +124,7 @@ function AddEvent() {
       <h1 className="add-event-h1">Add event</h1>
       <form onSubmit={handleSubmit}>
         <input
+          data-testid="event-name"
           type="text"
           value={eventName}
           onChange={(e) => setEventName(e.target.value)}
@@ -131,24 +132,28 @@ function AddEvent() {
           required
         />
         <textarea
+          data-testid="event-description"
           value={eventDescription}
           onChange={(e) => setEventDescription(e.target.value)}
           placeholder="Event Description"
           required
         ></textarea>
         <input
+          data-testid="date"
           type="date"
           value={eventDate}
           onChange={(e) => setEventDate(e.target.value)}
           required
         />
         <input
+          data-testid="time"
           type="time"
           value={eventTime}
           onChange={(e) => setEventTime(e.target.value)}
           required
         />
         <DropdownFiltered
+          testId="city-dropdown"
           label="Select a city"
           options={cities}
           onSelect={handleCitySelect}
@@ -156,6 +161,7 @@ function AddEvent() {
           resetFilterKey={selectedCity?.id}
         />
         <DropdownFiltered
+          testId="venue-dropdown"
           label="Select a venue"
           options={venues}
           onSelect={handleVenueSelect}
@@ -167,6 +173,7 @@ function AddEvent() {
         <SelectedBands selectedBands={selectedBands} />
 
         <button
+          data-testid="addevent-submit-button"
           type="submit"
           disabled={!isFormValid()}
           className="add-event-submit"
