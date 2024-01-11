@@ -10,15 +10,17 @@ export interface DropdownOption {
 interface DropdownProps {
   label: string
   options: DropdownOption[]
-  onSelect: (value: DropdownOption) => void
+  onSelect: (value: DropdownOption | null) => void
   disabled?: boolean
-  resetFilterKey?: number
+  resetFilterKey?: number | null
+  selectedValue?: DropdownOption | null
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
   label,
   options,
   onSelect,
+  selectedValue,
   disabled = false,
   resetFilterKey
 }) => {
@@ -33,17 +35,7 @@ const Dropdown: React.FC<DropdownProps> = ({
     console.log('filter Dropdown', filter)
   }
 
-  // useEffect(() => {
-  //   console.log('Resetting filter for key:', resetFilterKey)
-  //   setFilter('')
-  // }, [resetFilterKey])
-
-  // useEffect(() => {
-  //   console.log('filter Dropdown UseEffect', filter)
-  // }, [filter])
-
   useEffect(() => {
-    // Reset filter when resetFilterKey changes
     setFilter('')
   }, [resetFilterKey])
 
@@ -77,9 +69,21 @@ const Dropdown: React.FC<DropdownProps> = ({
     }
   }, [dropdownRef])
 
+  const renderSelectedValue = () => {
+    if (!selectedValue) return null
+
+    return (
+      <div className="selected-value">
+        {selectedValue.name}
+        <button onClick={() => onSelect(null)}>X</button>
+      </div>
+    )
+  }
+
   return (
     <div ref={dropdownRef} className="dropdown-container">
       <label className="dropdown-label">{label}</label>
+      {renderSelectedValue()}
       <input
         className="dropdown-input"
         type="text"
