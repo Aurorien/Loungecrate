@@ -2,22 +2,18 @@ import { useEffect, useState } from 'react'
 import DropdownFiltered from '../components/DropdownFiltered'
 import './AddEvent.css'
 
-interface DropdownOption {
-  name: string
-}
-
 function AddEvent() {
-  const [cities, setCities] = useState<DropdownOption[]>([])
-  const [venues, setVenues] = useState<DropdownOption[]>([])
-  const [bands, setBands] = useState<DropdownOption[]>([])
+  const [cities, setCities] = useState<string[]>([])
+  const [venues, setVenues] = useState<string[]>([])
+  const [bands, setBands] = useState<string[]>([])
 
   useEffect(() => {
     fetch('/dropdown-data')
       .then((response) => response.json())
       .then((data) => {
-        setCities(data.cities)
-        setVenues(data.venues)
-        setBands(data.bands)
+        setCities(data.cities.filter((city: string | null) => city != null))
+        setVenues(data.venues.filter((venue: string | null) => venue != null))
+        setBands(data.bands.filter((band: string | null) => band != null))
       })
       .catch((error) => {
         console.error('Error fetching dropdown data:', error)
@@ -47,19 +43,19 @@ function AddEvent() {
         <div className="dropdown-wrapper">
           <DropdownFiltered
             label="Add a city to the event"
-            options={cities.map((city) => city.name)}
+            options={cities}
             onSelect={handleCitySelect}
           />
 
           <DropdownFiltered
             label="Add a venue to the event"
-            options={venues.map((venue) => venue.name)}
+            options={venues}
             onSelect={handleVenueSelect}
           />
 
           <DropdownFiltered
             label="Add bands to the event"
-            options={bands.map((band) => band.name)}
+            options={bands}
             onSelect={handleBandSelect}
           />
         </div>

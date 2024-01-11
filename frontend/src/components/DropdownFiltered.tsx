@@ -10,6 +10,7 @@ interface DropdownProps {
 const Dropdown: React.FC<DropdownProps> = ({ label, options, onSelect }) => {
   const [filter, setFilter] = useState<string>('')
   const [showOptions, setShowOptions] = useState<boolean>(false)
+
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   const handleFilterChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -18,7 +19,7 @@ const Dropdown: React.FC<DropdownProps> = ({ label, options, onSelect }) => {
 
   const handleSelect = (value: string) => {
     onSelect(value)
-    setFilter('')
+    setFilter(value)
     setShowOptions(false)
   }
 
@@ -26,7 +27,7 @@ const Dropdown: React.FC<DropdownProps> = ({ label, options, onSelect }) => {
     setShowOptions(true)
   }
 
-  const filteredOptions = options.filter((option) =>
+  const filteredOptions = options.filter((option: string) =>
     option.toLowerCase().includes(filter.toLowerCase())
   )
 
