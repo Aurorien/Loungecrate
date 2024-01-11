@@ -243,10 +243,10 @@ app.get("/dropdown-data", async (_request, response) => {
 //   }
 // });
 
-// app.get("/test", async (_request, response) => {
-//   const data = { message: "Contact with backend confirmed" };
-//   response.json(data);
-// });
+app.get("/test", async (_request, response) => {
+  const data = { message: "Contact with backend confirmed" };
+  response.json(data);
+});
 
 ///////////////////////////////////////////////////////////
 
