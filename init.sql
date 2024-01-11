@@ -90,7 +90,12 @@ VALUES
   ('Flowerave', 'Large', 2),
   ('The Dome', 'Huge', 3),
   ('Folkets Hus', 'Large', 4),
-  ('Waldrock', 'Medium', 5);
+  ('Waldrock', 'Medium', 5),
+  ('Cellar', 'Medium', 5),
+  ('Park', 'Large', 5),
+  ('Ullevi', 'Huge', 2),
+  ('Castle', 'Large', 3),
+  ('Folkparken', 'Medium', 4);
 
 INSERT INTO band (bandName, bandGenre, bandDescription, bandCityId)
 VALUES
