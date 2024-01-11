@@ -140,6 +140,7 @@ app.post("/myevents", async (_request, response) => {
     e.eventTime,
     v.venueName,
     v.venueSize,
+    c.cityName,
     e.eventDescription,
     (
       SELECT JSON_AGG(
@@ -163,6 +164,7 @@ app.post("/myevents", async (_request, response) => {
     ) AS bandsAndRiders
   FROM events e
   JOIN venue v ON e.eventVenueId = v.venueId
+  JOIN city c ON v.venueCityId = c.cityId
   WHERE e.eventUserName = $1;`;
     const { rows } = await client.query(query, [username]);
     response.send(rows);
@@ -172,13 +174,82 @@ app.post("/myevents", async (_request, response) => {
   }
 });
 
+app.post("/addevent", async (_request, response) => {
+  try {
+    await client.query("BEGIN");
+
+    const {
+      eventName,
+      eventDescription,
+      eventDate,
+      eventTime,
+      eventVenueId,
+      eventUserName,
+      selectedBands,
+    } = _request.body;
+
+    console.log(_request.body);
+
+    const eventInsertQuery = `
+      INSERT INTO events (eventName, eventDescription, eventDate, eventTime, eventVenueId, eventUserName)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING eventId;
+    `;
+    const eventResult = await client.query(eventInsertQuery, [
+      eventName,
+      eventDescription,
+      eventDate,
+      eventTime,
+      eventVenueId,
+      eventUserName,
+    ]);
+    const eventid = eventResult.rows[0].eventid;
+
+    const bandInsertQuery = `INSERT INTO eventBand (eventBandEventId, eventBandBandId) VALUES ($1, $2);`;
+    for (const bandid of selectedBands) {
+      await client.query(bandInsertQuery, [eventid, bandid]);
+    }
+
+    await client.query("COMMIT");
+
+    response.status(200).send("Event added successfully");
+  } catch (error) {
+    await client.query("ROLLBACK");
+    console.error("Error executing the SQL query:", error);
+    response.status(500).send("Internal Server Error");
+  }
+});
+
+// app.post("/add-event", ) async (_request, response) => {
+//   try {
+
+//     const query = `BEGIN; -- Start transaction
+
+//     INSERT INTO events (eventName, eventDescription, eventDate, eventTime, eventVenueId, eventUserName)
+//     VALUES ($eventName, $eventDescription, $eventDate, $eventTime, $eventVenueId, $username)
+//     RETURNING eventId; -- Get the ID of the newly inserted event
+
+//     -- Then for each band associated with this event
+//     INSERT INTO eventBand (eventBandEventId, eventBandBandId)
+//     VALUES ($eventId, $bandId); -- Repeat this for each band
+
+//     COMMIT; -- Commit the transaction
+//     `
+
+//   } catch (error) {
+//     console.error("Error executing the SQL query:", error);
+//     response.status(500).send("Internal Server Error");
+//   }
+// }
+
 // Endpoint for populating dropdowns
 
-app.get("/dropdown-data", async (_request, response) => {
+app.get("/dropdowns", async (_request, response) => {
   try {
-    const citiesQuery = "SELECT cityname FROM city";
-    const venuesQuery = "SELECT venuename FROM venue";
-    const bandsQuery = "SELECT bandname FROM band";
+    const citiesQuery = "SELECT cityid, cityname FROM city";
+    const venuesQuery = "SELECT venueid, venuename FROM venue";
+    const bandsQuery =
+      "SELECT band.bandid, band.bandname, band.bandgenre, band.banddescription, city.cityname FROM band JOIN city ON band.bandcityid = city.cityid;";
 
     const [cityResults, venueResults, bandResults] = await Promise.all([
       client.query(citiesQuery),
@@ -193,11 +264,21 @@ app.get("/dropdown-data", async (_request, response) => {
       client.query(bandsQuery),
     ]);
 
-    const cities = cityResults.rows.map(
-      (row: { cityname: any }) => row.cityname
-    );
-    const venues = venueResults.rows.map((row) => row.venuename);
-    const bands = bandResults.rows.map((row) => row.bandname);
+    const cities = cityResults.rows.map((row) => ({
+      id: row.cityid,
+      name: row.cityname,
+    }));
+    const venues = venueResults.rows.map((row) => ({
+      id: row.venueid,
+      name: row.venuename,
+    }));
+    const bands = bandResults.rows.map((row) => ({
+      id: row.bandid,
+      name: row.bandname,
+      genre: row.bandgenre,
+      city: row.cityname,
+      description: row.banddescription,
+    }));
 
     // console.log("cities", cities);
     // console.log("venues", venues);
