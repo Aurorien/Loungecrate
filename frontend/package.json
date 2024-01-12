@@ -9,7 +9,9 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "test": "cross-env NODE_ENV=test cypress run",
+    "test:e2e": "cross-env NODE_ENV=test cypress run",
+    "test:component": "cross-env NODE_ENV=test cypress run --component",
+    "test": "npm run test:e2e && npm run test:component",
     "generate-report": "nyc report --reporter=text-summary --reporter=lcov"
   },
   "dependencies": {
@@ -39,7 +41,7 @@
     "istanbul-lib-coverage": "^3.2.2",
     "nyc": "^15.1.0",
     "typescript": "^5.0.2",
-    "vite": "^4.4.5",
+    "vite": "^4.5.1",
     "vite-plugin-istanbul": "^5.0.0"
   }
 }

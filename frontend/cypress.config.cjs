@@ -27,5 +27,13 @@ module.exports = defineConfig({
       'cypress/e2e/**/*.cy.{js,jsx,ts,tsx}',
       'cypress/e2e/**/*.feature'
     ]
+  },
+
+  component: {
+    devServer: {
+      framework: 'react',
+      bundler: 'vite'
+    },
+    specPattern: 'cypress/component/**/*.cy.{js,jsx,ts,tsx}'
   }
 })
