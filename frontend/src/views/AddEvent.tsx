@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import DropdownFiltered from '../components/DropdownFiltered'
 import { useLogInStore } from '../utils/store'
 import BandList from '../components/BandList'
 import SelectedBands from '../components/SelectedBands'
+import DropdownFiltered from '../components/DropdownFiltered'
+import Nav from '../components/Nav'
 import { DropdownOption, Band } from '../utils/interfaces'
 import { errorHandling } from '../utils/errorHandling'
 
@@ -119,6 +120,7 @@ function AddEvent() {
 
   return (
     <>
+      <Nav />
       <h1 className="add-event-h1">Add event</h1>
       {confirmationVisible ? (
         <div>
