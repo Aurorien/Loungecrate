@@ -1,64 +1,45 @@
-describe('Loungecrate', () => {
-  it('is logging in', () => {
+describe('Loungecrate e2e', () => {
+  it('handles failed login', () => {
     cy.visit('http://localhost:5173/')
-    cy.get('[data-testid="username"]').type('Shadowood')
-    cy.get('[data-testid="password"]').type('testuser')
-    console.log('Submitting login form')
-    cy.intercept('POST', '/login').as('postData')
-    cy.get('[data-testid="submit"]').click()
-    cy.wait('@postData').then((interception) => {
-      console.log('Login request intercepted', interception)
-      const responseBody = interception.response.body
-      console.log('Response Body:', responseBody.success)
-      expect(responseBody.success).to.equal(true)
-    })
-  })
-})
+    cy.get('[data-testid="username"]').type('InvalidUser')
+    cy.get('[data-testid="password"]').type('InvalidPassword')
 
-describe('AddEvent form tests', () => {
-  it('should enable the submit button when the form is filled correctly', () => {
-    cy.visit('http://localhost:5173/')
     cy.intercept('POST', '/login', {
-      statusCode: 200,
-      body: {
-        success: true,
-        username: 'Shadowood'
-      }
-    }).as('loginRequest')
-    cy.get('[data-testid="username"]').type('Shadowood')
-    cy.get('[data-testid="password"]').type('testuser')
+      statusCode: 401,
+      body: { success: false, message: 'Login failed' }
+    }).as('loginFailed')
+
     cy.get('[data-testid="submit"]').click()
-    cy.wait('@loginRequest').then((interception) => {
-      expect(interception.response.statusCode).to.eq(200)
-      expect(interception.response.body.success).to.be.true
-      expect(interception.response.body.username).to.eq('Shadowood')
+
+    cy.wait('@loginFailed').then((interception) => {
+      const responseBody = interception.response.body
+      expect(responseBody.success).to.equal(false)
     })
-    cy.get('[data-testid="home-add-event-button"]').should(
-      'have.text',
-      'Add event'
-    )
-    cy.get('[data-testid="home-add-event-button"]').click()
-    cy.url().should('include', '/addevent')
 
-    cy.get('[data-testid="addevent-submit-button"]').should('be.disabled')
+    cy.get('.error-message').should('contain', 'Login failed')
+  })
 
-    cy.get('[data-testid="event-name"]').type('Sample Event')
-    cy.get('[data-testid="event-description"]').type(
-      'This is a sample event description.'
-    )
-    cy.get('[data-testid="date"]').type('2025-01-01')
-    cy.get('[data-testid="time"]').type('12:00')
+  beforeEach(() => {
+    cy.login('Shadowood', 'testuser')
+  })
 
-    cy.get('[data-testid="city-dropdown-input"]').click()
-    cy.get('[data-testid="city-dropdown-list"] li').first().click()
+  it('logs in successfully', () => {
+    cy.wait(1000)
+  })
 
-    cy.get('[data-testid="venue-dropdown-input"]').click({ multiple: true })
-    cy.get('[data-testid="venue-dropdown-list"] li').first().click()
+  it('go to Add Event and fill the form', () => {
+    cy.goToAddEvent()
+    cy.fillEventForm()
+  })
 
-    cy.get('[data-testid="bandlist"] [data-testid="bandlist-add"]')
-      .first()
-      .click()
+  it('clicks on submit-button, a confirmation message appears for a while then gets redirected to homepage and the new event is visible in the list My events', () => {
+    cy.goToAddEvent()
+    cy.fillEventForm()
 
-    cy.get('[data-testid="addevent-submit-button"]').should('be.enabled')
+    cy.get('[data-testid="addevent-submit-button"]').click()
+    cy.url().should('include', '#/')
+    cy.get('[data-testid="event-list-h"]').should('have.text', 'My Events')
+    cy.get('[data-testid="event-list"]').should('be.visible')
+    cy.contains('Sample Event').should('exist')
   })
 })

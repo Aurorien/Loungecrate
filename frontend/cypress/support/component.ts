@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-namespace */
+
 // ***********************************************************
 // This example support/component.js is processed and
 // loaded automatically before your test files.
@@ -25,6 +27,9 @@ declare global {
   namespace Cypress {
     interface Chainable {
       mount: typeof mount
+      login(username: string, password: string): void
+      goToAddEvent(): void
+      fillEventForm(): void
     }
   }
 }
