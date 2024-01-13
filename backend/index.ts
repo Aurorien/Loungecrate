@@ -20,16 +20,10 @@ app.use(
   cors()
 );
 
-// app.use((req, res, next) => {
-//   res.setHeader("Content-Type", "application/json; charset=utf-8");
-//   next();
-// });
-
 async function databaseConnection(retryCount = 5, delay = 5000) {
   for (let i = 0; i < retryCount; i++) {
     try {
       await client.connect();
-      // await client.query("SET client_encoding TO 'UTF8'");
       console.log("Database is running and the connection is established.");
       return;
     } catch (error) {
