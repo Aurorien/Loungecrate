@@ -220,28 +220,6 @@ app.post("/addevent", async (_request, response) => {
   }
 });
 
-// app.post("/add-event", ) async (_request, response) => {
-//   try {
-
-//     const query = `BEGIN; -- Start transaction
-
-//     INSERT INTO events (eventName, eventDescription, eventDate, eventTime, eventVenueId, eventUserName)
-//     VALUES ($eventName, $eventDescription, $eventDate, $eventTime, $eventVenueId, $username)
-//     RETURNING eventId; -- Get the ID of the newly inserted event
-
-//     -- Then for each band associated with this event
-//     INSERT INTO eventBand (eventBandEventId, eventBandBandId)
-//     VALUES ($eventId, $bandId); -- Repeat this for each band
-
-//     COMMIT; -- Commit the transaction
-//     `
-
-//   } catch (error) {
-//     console.error("Error executing the SQL query:", error);
-//     response.status(500).send("Internal Server Error");
-//   }
-// }
-
 // Endpoint for populating dropdowns
 
 app.get("/dropdowns", async (_request, response) => {
@@ -253,13 +231,6 @@ app.get("/dropdowns", async (_request, response) => {
 
     const [cityResults, venueResults, bandResults] = await Promise.all([
       client.query(citiesQuery),
-      // .then((result) => {
-      //   console.log("City Query Result:", result.rows);
-      //   // rest of your code...
-      // })
-      // .catch((error) => {
-      //   console.error("Database Query Error:", error);
-      // }),
       client.query(venuesQuery),
       client.query(bandsQuery),
     ]);
@@ -281,11 +252,6 @@ app.get("/dropdowns", async (_request, response) => {
       description: row.banddescription,
     }));
 
-    // console.log("cities", cities);
-    // console.log("venues", venues);
-    // console.log("bands", bands);
-    // console.log("Hölö är gött");
-
     response.setHeader("Content-Type", "application/json; charset=utf-8");
     response.json({ cities, venues, bands });
   } catch (error) {
@@ -293,44 +259,6 @@ app.get("/dropdowns", async (_request, response) => {
     response.status(500).send("Error retrieving data");
   }
 });
-
-///////////////////////////////////////////////////////////
-// Debug endpoints
-
-// app.get("/test-swedish", (_req, res) => {
-//   res.setHeader("Content-Type", "text/plain; charset=utf-8");
-//   res.send("Swedish: åäö ÅÄÖ");
-// });
-
-// app.get("/city", async (_request, response) => {
-//   try {
-//     const sql = `SELECT * FROM city;`;
-//     const { rows } = await client.query(sql);
-//     response.send(rows);
-//   } catch (error) {
-//     console.error("Error executing the SQL query:", error);
-//     response.status(500).send("Internal Server Error");
-//   }
-// });
-
-// app.get("/citytest", async (_request, response) => {
-//   try {
-//     const sql = `SELECT * FROM city;`;
-//     const result = await client.query(sql);
-//     response.setHeader("Content-Type", "text/plain; charset=utf-8");
-//     response.send(JSON.stringify(result.rows, null, 2));
-//   } catch (error) {
-//     console.error("Error executing the SQL query:", error);
-//     response.status(500).send("Internal Server Error");
-//   }
-// });
-
-app.get("/test", async (_request, response) => {
-  const data = { message: "Contact with backend confirmed" };
-  response.json(data);
-});
-
-///////////////////////////////////////////////////////////
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);

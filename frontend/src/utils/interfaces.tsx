@@ -4,10 +4,6 @@ export interface ApiResponse {
   message?: string
 }
 
-export interface FeBeApiResponse {
-  message: string
-}
-
 export interface Event {
   eventid: number
   eventname: string

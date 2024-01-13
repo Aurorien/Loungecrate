@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useLogInStore } from '../utils/store'
-import { ApiResponse, FeBeApiResponse } from '../utils/interfaces'
+import { ApiResponse } from '../utils/interfaces'
 import { errorHandling } from '../utils/errorHandling'
 
 function LogInAndRegister() {
@@ -113,34 +113,6 @@ function LogInAndRegister() {
     }
   }
 
-  const [feBe, setFeBe] = useState(''),
-    [errorFeBe, setErrorFeBe] = useState('')
-
-  async function beConnectionFn() {
-    try {
-      const response = await fetch('http://localhost:3000/test')
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`)
-      }
-
-      const responsData: FeBeApiResponse = await response.json()
-      console.log(responsData)
-      setFeBe(responsData.message)
-    } catch (error) {
-      errorHandling(
-        'GET',
-        'contact confirming message from api not involving database',
-        error
-      )
-      if (error instanceof Error) {
-        setErrorFeBe(error.message)
-      } else {
-        setErrorFeBe('An unknown error occurred')
-      }
-    }
-  }
-
   return (
     <>
       {toggleForm.login ? (
@@ -180,23 +152,6 @@ function LogInAndRegister() {
         <div onClick={toggleFormFn}>
           {toggleForm.login ? 'Register' : 'Log In'}
         </div>
-      </div>
-      <div style={{ display: 'flex', margin: '10px' }}>
-        <div
-          id="be-connection"
-          onClick={beConnectionFn}
-          style={{
-            border: 'solid 2px red',
-            width: 'minContent',
-            height: 'minContent',
-            marginRight: '10px',
-            cursor: 'pointer'
-          }}
-        >
-          Backend Connection
-        </div>
-        {feBe ? <div>Message: {feBe}</div> : null}
-        {errorFeBe && <div>{errorFeBe}</div>}
       </div>
     </>
   )
