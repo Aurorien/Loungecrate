@@ -27,11 +27,6 @@ function LogInAndRegister() {
     event.preventDefault()
     setErrorMessage('')
 
-    if (!formData.password) {
-      console.error('Password is undefined or empty')
-      return
-    }
-
     try {
       if (toggleForm.login) {
         await loginUser(formData)
@@ -61,23 +56,31 @@ function LogInAndRegister() {
       })
 
       if (!response.ok) {
-        throw new Error('Login failed')
+        const responseData: ApiResponse = await response.json()
+        if (responseData.message) {
+          console.error('Login failed:', responseData.message)
+          setErrorMessage(responseData.message)
+        } else {
+          throw new Error('Login failed')
+        }
+        return
       }
 
       const responseData: ApiResponse = await response.json()
-      const user_name = responseData.username
-      console.log('user', user_name)
+      if (responseData.username) {
+        const user_name = responseData.username
 
-      if (responseData.success) {
-        sessionStorage.setItem('username', JSON.stringify(user_name))
-        sessionStorage.setItem('loggedIn', JSON.stringify(true))
-        setLoggedIn()
+        if (responseData.success) {
+          sessionStorage.setItem('username', JSON.stringify(user_name))
+          sessionStorage.setItem('loggedIn', JSON.stringify(true))
+          setLoggedIn()
 
-        setUsername(user_name)
+          setUsername(user_name)
+        }
       }
     } catch (error) {
       errorHandling('POST', 'on Log in', error)
-      throw new Error('Error logging in')
+      throw new Error('Failed to log in.')
     }
   }
 
@@ -143,7 +146,11 @@ function LogInAndRegister() {
           }
           required
         />
-        <button type="submit" data-testid="submit">
+        <button
+          type="submit"
+          data-testid="submit"
+          disabled={!formData.username || !formData.password}
+        >
           {toggleForm.login ? 'Log In' : 'Register'}
         </button>
         {errorMessage && <div className="error-message">{errorMessage}</div>}

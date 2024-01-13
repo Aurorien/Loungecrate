@@ -1,5 +1,5 @@
 export interface ApiResponse {
-  username: string
+  username?: string
   success: boolean
   message?: string
 }
