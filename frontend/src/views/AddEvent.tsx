@@ -4,6 +4,7 @@ import { useLogInStore } from '../utils/store'
 import BandList from '../components/BandList'
 import SelectedBands from '../components/SelectedBands'
 import { DropdownOption, Band } from '../utils/interfaces'
+import { errorHandling } from '../utils/errorHandling'
 
 function AddEvent() {
   const { username } = useLogInStore()
@@ -30,7 +31,7 @@ function AddEvent() {
         setBands(data.bands.filter((band: string | null) => band != null))
       })
       .catch((error) => {
-        console.error('Error fetching dropdown data:', error)
+        errorHandling('POST', 'Error fetching dropdown data:', error)
       })
   }, [])
 
@@ -114,7 +115,7 @@ function AddEvent() {
         console.error('Failed to add event')
       }
     } catch (error) {
-      console.error('Error submitting event:', error)
+      errorHandling('POST', 'Error submitting event:', error)
     }
   }
 
