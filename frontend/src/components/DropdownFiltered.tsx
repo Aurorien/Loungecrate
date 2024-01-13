@@ -1,11 +1,6 @@
 import { useEffect, useState, useRef, ChangeEvent } from 'react'
+import { DropdownOption } from '../utils/interfaces'
 import './DropdownFiltered.css'
-
-export interface DropdownOption {
-  id: number
-  name: string
-  cityid?: number
-}
 
 interface DropdownProps {
   label: string

@@ -1,13 +1,6 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
+import { Band } from '../utils/interfaces'
 import './BandList.css'
-
-export interface Band {
-  id: number
-  name: string
-  genre: string
-  city: string
-  description: string
-}
 
 interface BandListProps {
   bands: Band[]

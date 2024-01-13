@@ -1,5 +1,5 @@
 import React from 'react'
-import { Band } from './BandList'
+import { Band } from '../utils/interfaces'
 
 interface SelectedBandsProps {
   selectedBands: Band[]

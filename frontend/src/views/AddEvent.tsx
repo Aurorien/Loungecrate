@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
-import DropdownFiltered, {
-  DropdownOption
-} from '../components/DropdownFiltered'
+import DropdownFiltered from '../components/DropdownFiltered'
 import { useLogInStore } from '../utils/store'
-import BandList, { Band } from '../components/BandList'
+import BandList from '../components/BandList'
 import SelectedBands from '../components/SelectedBands'
+import { DropdownOption, Band } from '../utils/interfaces'
 
 function AddEvent() {
   const { username } = useLogInStore()
