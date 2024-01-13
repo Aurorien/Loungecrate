@@ -29,7 +29,6 @@ const DropdownFiltered: React.FC<DropdownProps> = ({
 
   const handleFilterChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFilter(e.target.value)
-    console.log('filter Dropdown', filter)
   }
 
   useEffect(() => {
@@ -79,7 +78,9 @@ const DropdownFiltered: React.FC<DropdownProps> = ({
 
   return (
     <div ref={dropdownRef} className="dropdown-container">
-      <label className="dropdown-label">{label}</label>
+      <label data-testid={`${testId}-label`} className="dropdown-label">
+        {label}
+      </label>
       {renderSelectedValue()}
       <input
         data-testid={`${testId}-input`}
