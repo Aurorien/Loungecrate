@@ -113,7 +113,7 @@ app.post("/register", async (request, response) => {
 
     response.status(201).json({
       success: true,
-      message: "User registered successfully",
+      message: "Registration successful",
     });
   } catch (error) {
     console.error("Error executing the SQL query:", error);

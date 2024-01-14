@@ -12,7 +12,8 @@ function LogInAndRegister() {
       login: true,
       register: false
     }),
-    [errorMessage, setErrorMessage] = useState('')
+    [errorMessage, setErrorMessage] = useState(''),
+    [successMessage, setSuccessMessage] = useState('')
 
   const { setLoggedIn, setUsername } = useLogInStore()
 
@@ -23,9 +24,53 @@ function LogInAndRegister() {
     })
   }
 
+  const validateForm = () => {
+    const usernamePattern = /^[a-zA-Z0-9]+$/
+    const passwordPattern = /^[a-zA-Z0-9]+$/
+
+    if (
+      !formData.username ||
+      formData.username.length < 4 ||
+      formData.username.length > 50
+    ) {
+      setErrorMessage(
+        'Registration Failed. Username must be at least 4 and max 50 characters long.'
+      )
+      return false
+    }
+
+    if (!usernamePattern.test(formData.username)) {
+      setErrorMessage(
+        'Registration Failed. Username can only contain letters (English alphabet) and numbers.'
+      )
+      return false
+    }
+
+    if (!formData.password || formData.password.length < 8) {
+      setErrorMessage(
+        'Registration Failed. Password must be at least 8 characters long.'
+      )
+      return false
+    }
+
+    if (!passwordPattern.test(formData.password)) {
+      setErrorMessage(
+        'Registration Failed. Password can only contain letters (English alphabet) and numbers.'
+      )
+      return false
+    }
+
+    setErrorMessage('')
+    return true
+  }
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setErrorMessage('')
+
+    if (!validateForm()) {
+      return
+    }
 
     try {
       if (toggleForm.login) {
@@ -55,28 +100,22 @@ function LogInAndRegister() {
         body: JSON.stringify({ username, password })
       })
 
-      if (!response.ok) {
-        const responseData: ApiResponse = await response.json()
-        if (responseData.message) {
-          console.error('Login failed:', responseData.message)
-          setErrorMessage(responseData.message)
-        } else {
-          throw new Error('Login failed')
-        }
-        return
+      const responseData: ApiResponse = await response.json()
+
+      console.log('responseData', responseData)
+
+      if (!response.ok && responseData.message) {
+        console.error('Login failed:', responseData.message)
+        setErrorMessage(responseData.message)
       }
 
-      const responseData: ApiResponse = await response.json()
-      if (responseData.username) {
+      if (responseData.username && responseData.success) {
         const user_name = responseData.username
+        sessionStorage.setItem('username', JSON.stringify(user_name))
+        sessionStorage.setItem('loggedIn', JSON.stringify(true))
+        setLoggedIn()
 
-        if (responseData.success) {
-          sessionStorage.setItem('username', JSON.stringify(user_name))
-          sessionStorage.setItem('loggedIn', JSON.stringify(true))
-          setLoggedIn()
-
-          setUsername(user_name)
-        }
+        setUsername(user_name)
       }
     } catch (error) {
       errorHandling('POST', 'on Log in', error)
@@ -91,6 +130,8 @@ function LogInAndRegister() {
     username: string
     password: string
   }): Promise<void> => {
+    console.log('username', username)
+    console.log('password', password)
     try {
       const response = await fetch('/register', {
         method: 'POST',
@@ -100,28 +141,35 @@ function LogInAndRegister() {
         body: JSON.stringify({ username, password })
       })
 
-      if (!response.ok) {
-        throw new Error('Registration failed')
-      }
-
       const responseData: ApiResponse = await response.json()
-      if (responseData.success) {
-        console.log('Username:', responseData.username)
-      } else {
-        console.error('Registration failed:', responseData.message)
+      console.log('responseData', responseData)
+
+      if (!response.ok) {
+        const errorMessage: string =
+          responseData.message || 'Registration failed'
+        console.error('Registration failed:', errorMessage)
+        setErrorMessage(errorMessage)
+      } else if (responseData.message) {
+        setSuccessMessage(responseData.message)
       }
     } catch (error) {
       errorHandling('POST', 'on Register', error)
-      throw new Error('Error registering user')
+      throw new Error(
+        'Error registering user: Username already in use, or Internal Server Error'
+      )
     }
   }
 
   return (
     <>
       {toggleForm.login ? (
-        <h1 className="login">Log in</h1>
+        <h1 data-testid="login" className="login">
+          Log in
+        </h1>
       ) : (
-        <h1 className="register">Register</h1>
+        <h1 data-testid="register" className="register">
+          Register
+        </h1>
       )}
       <form onSubmit={handleSubmit}>
         <label htmlFor="username">Username: </label>
@@ -153,7 +201,16 @@ function LogInAndRegister() {
         >
           {toggleForm.login ? 'Log In' : 'Register'}
         </button>
-        {errorMessage && <div className="error-message">{errorMessage}</div>}
+        {successMessage && (
+          <div data-testid="success-message" className="success-message">
+            {successMessage}
+          </div>
+        )}
+        {errorMessage && (
+          <div data-testid="error-message" className="error-message">
+            {errorMessage}
+          </div>
+        )}
       </form>
       <div>
         <div onClick={toggleFormFn}>
