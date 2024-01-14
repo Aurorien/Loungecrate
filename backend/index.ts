@@ -43,7 +43,6 @@ async function databaseConnection(retryCount = 5, delay = 5000) {
 databaseConnection();
 
 // LOGIN
-
 const generateSalt = () => {
   return crypto.randomBytes(16).toString("hex");
 };
@@ -98,7 +97,6 @@ app.post("/login", async (request, response) => {
 });
 
 // Endpoint for register user
-
 app.post("/register", async (request, response) => {
   const { username, password } = request.body;
 
@@ -122,7 +120,6 @@ app.post("/register", async (request, response) => {
 });
 
 // Endpoint for getting events for logged in user
-
 app.post("/myevents", async (_request, response) => {
   try {
     const { username } = _request.body;
@@ -168,6 +165,7 @@ app.post("/myevents", async (_request, response) => {
   }
 });
 
+// Endpoint for add event
 app.post("/addevent", async (_request, response) => {
   try {
     await client.query("BEGIN");
@@ -215,7 +213,6 @@ app.post("/addevent", async (_request, response) => {
 });
 
 // Endpoint for populating dropdowns
-
 app.get("/dropdowns", async (_request, response) => {
   try {
     const citiesQuery = "SELECT cityid, cityname FROM city";
