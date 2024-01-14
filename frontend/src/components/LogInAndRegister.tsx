@@ -102,8 +102,6 @@ function LogInAndRegister() {
 
       const responseData: ApiResponse = await response.json()
 
-      console.log('responseData', responseData)
-
       if (!response.ok && responseData.message) {
         console.error('Login failed:', responseData.message)
         setErrorMessage(responseData.message)
@@ -130,8 +128,6 @@ function LogInAndRegister() {
     username: string
     password: string
   }): Promise<void> => {
-    console.log('username', username)
-    console.log('password', password)
     try {
       const response = await fetch('/register', {
         method: 'POST',
@@ -142,7 +138,6 @@ function LogInAndRegister() {
       })
 
       const responseData: ApiResponse = await response.json()
-      console.log('responseData', responseData)
 
       if (!response.ok) {
         const errorMessage: string =
