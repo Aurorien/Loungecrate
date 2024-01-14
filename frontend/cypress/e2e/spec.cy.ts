@@ -32,7 +32,7 @@ describe('Loungecrate e2e', () => {
     cy.fillEventForm()
   })
 
-  it('clicks on submit-button, a confirmation message appears for a while then gets redirected to homepage and the new event is visible in the list My events', () => {
+  it('clicks on submit-button and a confirmation message appears for a while then gets redirected to homepage and the new event is visible in the list My events', () => {
     cy.goToAddEvent()
     cy.fillEventForm()
 
