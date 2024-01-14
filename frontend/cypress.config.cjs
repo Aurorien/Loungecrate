@@ -30,6 +30,16 @@ module.exports = defineConfig({
   },
 
   component: {
+    async setupNodeEvents(on, config) {
+      const bundler = createBundler({
+        plugins: [createEsbuildPlugin(config)]
+      })
+      on('file:preprocessor', bundler)
+
+      codeCoverageTask(on, config)
+
+      return config
+    },
     devServer: {
       framework: 'react',
       bundler: 'vite'
